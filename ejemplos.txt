@@ -1,0 +1,24 @@
+-- Insertar usuarios de ejemplo
+INSERT INTO users (id, email, username, display_name, avatar_url, bio) VALUES
+  ('550e8400-e29b-41d4-a716-446655440001', 'sakura@anivers.com', 'sakura_haruno', 'Sakura Haruno', 'https://i.imgur.com/sakura_avatar.jpg', 'Kunoichi del Equipo 7 🍃'),
+  ('550e8400-e29b-41d4-a716-446655440002', 'naruto@anivers.com', 'naruto_uzumaki', 'Naruto Uzumaki', 'https://i.imgur.com/naruto_avatar.jpg', '¡Voy a ser Hokage! 🍜'),
+  ('550e8400-e29b-41d4-a716-446655440003', 'luffy@anivers.com', 'monkey_d_luffy', 'Monkey D. Luffy', 'https://i.imgur.com/luffy_avatar.jpg', '¡Voy a ser el Rey de los Piratas! 🏴‍☠️'),
+  ('550e8400-e29b-41d4-a716-446655440004', 'goku@anivers.com', 'son_goku', 'Son Goku', 'https://i.imgur.com/goku_avatar.jpg', '¡Vamos a entrenar! ⚡'),
+  ('550e8400-e29b-41d4-a716-446655440005', 'tanjiro@anivers.com', 'tanjiro_kamado', 'Tanjiro Kamado', 'https://i.imgur.com/tanjiro_avatar.jpg', 'Demon Slayer en entrenamiento 🔥');
+
+-- Insertar posts de ejemplo
+INSERT INTO posts (id, user_id, content, image_url, created_at) VALUES
+  ('660e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440001', '¡Acabo de ver el último episodio de Naruto! La batalla final fue épica 🔥', 'https://i.imgur.com/naruto_battle.jpg', NOW() - INTERVAL '2 hours'),
+  ('660e8400-e29b-41d4-a716-446655440002', '550e8400-e29b-41d4-a716-446655440002', 'One Piece 1100+ capítulos y sigue siendo increíble. ¡Luffy es el mejor! 🏴‍☠️', 'https://i.imgur.com/one_piece_1100.jpg', NOW() - INTERVAL '4 hours'),
+  ('660e8400-e29b-41d4-a716-446655440003', '550e8400-e29b-41d4-a716-446655440003', 'Demon Slayer: Kimetsu no Yaiba - La animación de Ufotable es simplemente perfecta ✨', 'https://i.imgur.com/demon_slayer_animation.jpg', NOW() - INTERVAL '6 hours'),
+  ('660e8400-e29b-41d4-a716-446655440004', '550e8400-e29b-41d4-a716-446655440004', 'Dragon Ball Super: ¡Goku ha alcanzado un nuevo nivel de poder! 🐉', 'https://i.imgur.com/goku_power_up.jpg', NOW() - INTERVAL '8 hours'),
+  ('660e8400-e29b-41d4-a716-446655440005', '550e8400-e29b-41d4-a716-446655440005', 'Attack on Titan final season - ¡Qué final tan emotivo! Historia magistral 📚', 'https://i.imgur.com/attack_on_titan_final.jpg', NOW() - INTERVAL '12 hours');
+
+-- Insertar algunos likes de ejemplo
+INSERT INTO post_likes (post_id, user_id, created_at) VALUES
+  ('660e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440002', NOW() - INTERVAL '1 hour'),
+  ('660e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440003', NOW() - INTERVAL '30 minutes'),
+  ('660e8400-e29b-41d4-a716-446655440002', '550e8400-e29b-41d4-a716-446655440001', NOW() - INTERVAL '3 hours'),
+  ('660e8400-e29b-41d4-a716-446655440002', '550e8400-e29b-41d4-a716-446655440004', NOW() - INTERVAL '2 hours'),
+  ('660e8400-e29b-41d4-a716-446655440003', '550e8400-e29b-41d4-a716-446655440005', NOW() - INTERVAL '5 hours'),
+  ('660e8400-e29b-41d4-a716-446655440004', '550e8400-e29b-41d4-a716-446655440003', NOW() - INTERVAL '7 hours');

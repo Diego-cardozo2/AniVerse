@@ -1,0 +1,477 @@
+/* HomeFeed.css - Estilos para el Feed Principal de AniVerse */
+
+.home-feed {
+  background-color: #131313;
+  min-height: 100vh;
+  padding: 0;
+  max-width: 600px;
+  margin: 0 auto;
+  position: relative;
+  width: 100%;
+}
+
+/* Header del Feed */
+.feed-header {
+  text-align: center;
+  margin-bottom: 0;
+  padding: 20px 20px 16px 20px;
+  border-bottom: 1px solid #333;
+  border-left: 1px solid #333;
+  border-right: 1px solid #333;
+  position: sticky;
+  top: 0;
+  background: rgba(19, 19, 19, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 10;
+}
+
+/* Título Principal - Máxima Jerarquía */
+.feed-title {
+  font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: 800;
+  font-size: 32px;
+  color: #F5F5F5;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  background: linear-gradient(135deg, #F5F5F5, #D01C1C);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Subtítulo */
+.feed-subtitle {
+  font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: #a0a0a0;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Acciones del Header */
+.header-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.refresh-button,
+.logout-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  color: #a0a0a0;
+}
+
+.refresh-button:hover,
+.logout-button:hover {
+  background-color: #282828;
+  color: #F5F5F5;
+}
+
+.refresh-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.refresh-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.refresh-button:hover .refresh-icon {
+  transform: rotate(180deg);
+}
+
+.logout-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.logout-button:hover {
+  color: #D01C1C;
+}
+
+/* Contenedor de Posts */
+.posts-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  width: 100%;
+  border-left: 1px solid #333;
+  border-right: 1px solid #333;
+}
+
+/* Wrapper para el compositor */
+.feed-composer-wrapper {
+  border-left: 1px solid #333;
+  border-right: 1px solid #333;
+  border-bottom: 1px solid #333;
+}
+
+/* Líneas divisorias entre posts (estilo X/Twitter) */
+.posts-container > * {
+  border-bottom: 1px solid #333;
+  width: 100%;
+}
+
+.posts-container > *:last-child {
+  border-bottom: none;
+}
+
+/* Estados de Carga */
+.loading-container,
+.error-container,
+.empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #282828;
+  border-top: 3px solid #D01C1C;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+.loading-spinner.small {
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
+  margin-bottom: 0;
+  margin-right: 8px;
+}
+
+.loading-text {
+  font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: #a0a0a0;
+  margin: 0;
+}
+
+/* Estados de Error */
+.error-container {
+  color: #F5F5F5;
+}
+
+.error-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.error-text {
+  font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: #a0a0a0;
+  margin: 0 0 20px 0;
+  line-height: 1.5;
+}
+
+.retry-button {
+  background-color: #143c4d;
+  color: #F5F5F5;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.retry-button:hover {
+  background-color: #0f2d3a;
+  transform: translateY(-1px);
+}
+
+/* Estados Vacíos */
+.empty-container {
+  color: #F5F5F5;
+}
+
+.empty-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+}
+
+.empty-title {
+  font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  color: #F5F5F5;
+  margin: 0 0 12px 0;
+  letter-spacing: -0.02em;
+}
+
+.empty-text {
+  font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: #a0a0a0;
+  margin: 0 0 24px 0;
+  line-height: 1.5;
+}
+
+.create-post-button {
+  background-color: #143c4d;
+  color: #F5F5F5;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 8px;
+  font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.create-post-button:hover {
+  background-color: #0f2d3a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(208, 28, 28, 0.3);
+}
+
+/* Botón flotante para crear post */
+.floating-create-button {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  background-color: #143c4d;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none;
+  transition: all 0.3s ease;
+  z-index: 100;
+}
+
+.floating-create-button:hover {
+  background-color: #0f2d3a;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: none;
+}
+
+.floating-create-button:active {
+  transform: translateY(0) scale(0.95);
+}
+
+.floating-create-button svg {
+  width: 24px;
+  height: 24px;
+  color: #F5F5F5;
+}
+
+/* Indicadores de Estado */
+.loading-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  color: #a0a0a0;
+  font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
+  font-size: 14px;
+}
+
+.realtime-indicator {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #282828;
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid #3a3a3a;
+  font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
+  font-size: 12px;
+  color: #a0a0a0;
+  z-index: 1000;
+}
+
+.realtime-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #4ade80;
+  border-radius: 50%;
+  animation: pulse-green 2s infinite;
+}
+
+/* Animaciones */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse-green {
+  0%, 100% { 
+    opacity: 1; 
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.7; 
+    transform: scale(1.1);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .home-feed {
+    padding: 16px;
+  }
+  
+  .feed-title {
+    font-size: 28px;
+  }
+  
+  .feed-subtitle {
+    font-size: 14px;
+  }
+  
+  .header-actions {
+    position: static;
+    margin-top: 12px;
+    justify-content: center;
+  }
+  
+  .empty-icon {
+    font-size: 48px;
+  }
+  
+  .empty-title {
+    font-size: 20px;
+  }
+  
+  .empty-text {
+    font-size: 14px;
+  }
+  
+  .floating-create-button {
+    bottom: 70px;
+    right: 16px;
+    width: 52px;
+    height: 52px;
+  }
+  
+  .floating-create-button svg {
+    width: 22px;
+    height: 22px;
+  }
+  
+  .realtime-indicator {
+    bottom: 16px;
+    right: 16px;
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-feed {
+    padding: 12px;
+  }
+  
+  .feed-title {
+    font-size: 24px;
+  }
+  
+  .posts-container {
+    gap: 0;
+  }
+  
+  .floating-create-button {
+    bottom: 65px;
+    right: 12px;
+    width: 48px;
+    height: 48px;
+  }
+  
+  .floating-create-button svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .loading-container,
+  .error-container,
+  .empty-container {
+    min-height: 300px;
+    padding: 20px 16px;
+  }
+}
+
+/* Accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  .loading-spinner,
+  .refresh-icon,
+  .realtime-dot {
+    animation: none;
+  }
+  
+  .retry-button:hover,
+  .create-post-button:hover {
+    transform: none;
+  }
+}
+
+/* Modo de Alto Contraste */
+@media (prefers-contrast: high) {
+  .home-feed {
+    background-color: #000000;
+  }
+  
+  .feed-header {
+    border-bottom-color: #F5F5F5;
+  }
+  
+  .feed-title {
+    color: #F5F5F5;
+    background: none;
+    -webkit-text-fill-color: #F5F5F5;
+  }
+  
+  .posts-container {
+    border: 1px solid #F5F5F5;
+    border-radius: 8px;
+    padding: 16px;
+  }
+}
+
+/* Scroll suave */
+.posts-container {
+  scroll-behavior: smooth;
+}
+
+/* Mejoras de rendimiento */
+.posts-container {
+  contain: layout style paint;
+}
+
+.post-card {
+  contain: layout style paint;
+}

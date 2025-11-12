@@ -1,0 +1,290 @@
+/* PostCard.css - Estilos para AniVerse */
+
+.post-card {
+  background-color: #131313;
+  border-radius: 0;
+  margin-bottom: 0;
+  padding: 20px;
+  border: none;
+  border-bottom: 1px solid #333;
+  transition: all 0.2s ease;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.post-card:hover {
+  background-color: rgba(26, 26, 26, 0.5);
+}
+
+/* Header del Post */
+.post-header {
+  margin-bottom: 16px;
+  text-align: left;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.avatar-container {
+  position: relative;
+}
+
+.user-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #3a3a3a;
+}
+
+.user-avatar-placeholder {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #D01C1C, #ff4444);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #F5F5F5;
+  font-weight: bold;
+  font-size: 18px;
+  border: 2px solid #3a3a3a;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+  align-items: flex-start;
+}
+
+/* Jerarquía de Tipografía - Encabezados Bold y Geométricos */
+.username {
+  font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: #F5F5F5;
+  margin: 0;
+  letter-spacing: -0.02em;
+  line-height: 1.4;
+  text-align: left;
+  /* Permitir múltiples líneas si es necesario */
+  white-space: normal;
+  word-wrap: break-word;
+  max-width: 100%;
+}
+
+/* Texto Común - Orgánico y Redondeado */
+.post-time {
+  font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  color: #a0a0a0;
+  line-height: 1.4;
+  text-align: left;
+}
+
+/* Contenido del Post */
+.post-content {
+  margin-bottom: 16px;
+}
+
+.post-text {
+  font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  color: #F5F5F5;
+  line-height: 1.6;
+  margin: 0 0 12px 0;
+  word-wrap: break-word;
+  text-align: left;
+  width: 100%;
+}
+
+.post-image-container {
+  margin-top: 12px;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #1a1a1a;
+}
+
+.post-image {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Acciones del Post */
+.post-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 24px;
+  padding-top: 12px;
+  border-top: 1px solid #3a3a3a;
+  width: 100%;
+}
+
+.post-actions button {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  color: #a0a0a0;
+}
+
+.post-actions button:hover {
+  background-color: #3a3a3a;
+  color: #F5F5F5;
+}
+
+.post-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Botón de Like - Pregnancia con Rojo */
+.like-button {
+  color: #a0a0a0;
+}
+
+.like-button:hover {
+  background-color: rgba(208, 28, 28, 0.1);
+}
+
+.like-button.liked {
+  color: #D01C1C;
+}
+
+.like-button.liked:hover {
+  background-color: rgba(208, 28, 28, 0.2);
+}
+
+.comment-button.active {
+  color: #D01C1C;
+  background-color: rgba(208, 28, 28, 0.1);
+}
+
+.comment-button.active:hover {
+  background-color: rgba(208, 28, 28, 0.2);
+}
+
+/* Sección de comentarios */
+.post-comments-section {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #3a3a3a;
+}
+
+/* Iconos */
+.like-icon,
+.comment-icon,
+.share-icon {
+  width: 20px;
+  height: 20px;
+  transition: all 0.2s ease;
+}
+
+.like-button.liked .like-icon {
+  transform: scale(1.1);
+}
+
+/* Contadores */
+.like-count,
+.comment-count {
+  font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  min-width: 16px;
+  text-align: center;
+}
+
+/* Estados de Carga */
+.post-actions button:disabled .like-icon {
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .post-card {
+    margin-bottom: 16px;
+    padding: 16px;
+  }
+  
+  .user-avatar,
+  .user-avatar-placeholder {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+  
+  .username {
+    font-size: 15px;
+  }
+  
+  .post-text {
+    font-size: 14px;
+  }
+  
+  .post-actions {
+    gap: 20px;
+  }
+  
+  .like-icon,
+  .comment-icon,
+  .share-icon {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  .post-card,
+  .post-actions button,
+  .like-icon {
+    transition: none;
+  }
+  
+  .post-actions button:disabled .like-icon {
+    animation: none;
+  }
+}
+
+/* Modo de Alto Contraste */
+@media (prefers-contrast: high) {
+  .post-card {
+    border: 2px solid #F5F5F5;
+  }
+  
+  .username {
+    color: #F5F5F5;
+  }
+  
+  .post-text {
+    color: #F5F5F5;
+  }
+}

@@ -1,0 +1,145 @@
+/* UserLink.css - Estilos para el componente UserLink */
+
+.user-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  width: fit-content;
+}
+
+.user-link:hover {
+  opacity: 0.8;
+}
+
+/* Tamaños del avatar */
+.user-link-avatar {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.user-link-small .user-link-avatar {
+  width: 32px;
+  height: 32px;
+}
+
+.user-link-medium .user-link-avatar {
+  width: 48px;
+  height: 48px;
+}
+
+.user-link-large .user-link-avatar {
+  width: 64px;
+  height: 64px;
+}
+
+.user-link-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #3a3a3a;
+  transition: border-color 0.2s ease;
+}
+
+.user-link:hover .user-link-avatar-img {
+  border-color: #D01C1C;
+}
+
+.user-link-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #D01C1C, #ff4444);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #F5F5F5;
+  font-weight: bold;
+  border: 2px solid #3a3a3a;
+  transition: border-color 0.2s ease;
+}
+
+.user-link-small .user-link-avatar-placeholder {
+  font-size: 14px;
+}
+
+.user-link-medium .user-link-avatar-placeholder {
+  font-size: 18px;
+}
+
+.user-link-large .user-link-avatar-placeholder {
+  font-size: 24px;
+}
+
+.user-link:hover .user-link-avatar-placeholder {
+  border-color: #D01C1C;
+}
+
+/* Nombre de usuario */
+.user-link-name {
+  font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: 700;
+  color: #D01C1C;
+  transition: color 0.2s ease;
+  text-decoration: none;
+}
+
+.user-link-small .user-link-name {
+  font-size: 14px;
+}
+
+.user-link-medium .user-link-name {
+  font-size: 16px;
+}
+
+.user-link-large .user-link-name {
+  font-size: 20px;
+}
+
+.user-link:hover .user-link-name {
+  color: #ff4444;
+}
+
+/* Variantes solo avatar o solo nombre */
+.user-link:has(.user-link-avatar:only-child) {
+  gap: 0;
+}
+
+.user-link:has(.user-link-name:only-child) {
+  gap: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .user-link-small .user-link-avatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  .user-link-medium .user-link-avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .user-link-large .user-link-avatar {
+    width: 56px;
+    height: 56px;
+  }
+
+  .user-link-small .user-link-name {
+    font-size: 13px;
+  }
+
+  .user-link-medium .user-link-name {
+    font-size: 15px;
+  }
+
+  .user-link-large .user-link-name {
+    font-size: 18px;
+  }
+}
+

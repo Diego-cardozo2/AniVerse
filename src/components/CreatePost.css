@@ -1,0 +1,657 @@
+/* CreatePost.css - Estilos para el componente de crear publicación */
+
+.create-post-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(19, 19, 19, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+  backdrop-filter: blur(8px);
+  animation: overlayFadeIn 0.3s ease-out;
+}
+
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.create-post-container {
+  background-color: #282828;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid #3a3a3a;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
+  animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Header del Modal */
+.create-post-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 28px;
+  border-bottom: 1px solid #3a3a3a;
+  background: linear-gradient(135deg, #282828, #1a1a1a);
+  border-radius: 20px 20px 0 0;
+}
+
+/* Título Principal - Máxima Jerarquía Geométrica */
+.create-post-title {
+  font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: 800;
+  font-size: 24px;
+  color: #F5F5F5;
+  margin: 0;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  background: linear-gradient(135deg, #F5F5F5, #D01C1C);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.create-post-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 12px;
+  color: #a0a0a0;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.create-post-close:hover {
+  background-color: #3a3a3a;
+  color: #F5F5F5;
+  transform: scale(1.05);
+}
+
+.create-post-close:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.create-post-close svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* Formulario */
+.create-post-form {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Secciones del formulario */
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Labels - Jerarquía Media */
+.form-label {
+  font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #F5F5F5;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+/* Textarea de contenido - Estilo Orgánico y Redondeado */
+.post-content-textarea {
+  width: 100%;
+  background-color: #1a1a1a;
+  border: 2px solid #3a3a3a;
+  border-radius: 16px;
+  padding: 20px;
+  font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: #F5F5F5;
+  resize: vertical;
+  min-height: 140px;
+  transition: all 0.3s ease;
+  line-height: 1.6;
+}
+
+.post-content-textarea:focus {
+  outline: none;
+  border-color: #D01C1C;
+  box-shadow: 0 0 0 3px rgba(208, 28, 28, 0.2);
+  background-color: #131313;
+}
+
+.post-content-textarea::placeholder {
+  color: #a0a0a0;
+  font-style: italic;
+}
+
+.post-content-textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Contador de caracteres */
+.character-counter {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
+  font-size: 13px;
+}
+
+.character-count {
+  color: #a0a0a0;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.character-count.warning {
+  color: #D01C1C;
+  font-weight: 600;
+}
+
+.character-max {
+  color: #666;
+  font-weight: 400;
+}
+
+/* Área de subida de imagen */
+.image-upload-area {
+  border: 2px dashed #3a3a3a;
+  border-radius: 16px;
+  padding: 40px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #1a1a1a;
+  position: relative;
+  overflow: hidden;
+}
+
+.image-upload-area:hover {
+  border-color: #D01C1C;
+  background-color: rgba(208, 28, 28, 0.05);
+  transform: translateY(-2px);
+}
+
+.image-upload-area::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(208, 28, 28, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.image-upload-area:hover::before {
+  left: 100%;
+}
+
+.upload-icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+  transition: transform 0.3s ease;
+}
+
+.image-upload-area:hover .upload-icon {
+  transform: scale(1.1);
+}
+
+.upload-text {
+  font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  color: #D01C1C;
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+}
+
+.upload-hint {
+  font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  color: #a0a0a0;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Preview de imagen */
+.image-preview-container {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: #1a1a1a;
+  border: 2px solid #3a3a3a;
+}
+
+.image-preview {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  display: block;
+}
+
+.remove-image-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background-color: rgba(0, 0, 0, 0.8);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #F5F5F5;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.remove-image-btn:hover {
+  background-color: rgba(208, 28, 28, 0.9);
+  transform: scale(1.1);
+}
+
+.remove-image-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.remove-image-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Input de archivo oculto */
+.hidden-file-input {
+  display: none;
+}
+
+/* Barra de progreso */
+.progress-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background-color: #1a1a1a;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid #3a3a3a;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #D01C1C, #ff4444);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.progress-text {
+  font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: #a0a0a0;
+  margin: 0;
+  text-align: center;
+}
+
+/* Mensajes de estado */
+.status-message {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  animation: messageSlideIn 0.3s ease-out;
+}
+
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.status-message.error {
+  background-color: rgba(208, 28, 28, 0.1);
+  border: 1px solid rgba(208, 28, 28, 0.3);
+  color: #D01C1C;
+}
+
+.status-message.success {
+  background-color: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  color: #4ade80;
+}
+
+.status-message svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* Botones de acción */
+.form-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.cancel-btn {
+  background-color: transparent;
+  color: #a0a0a0;
+  border: 2px solid #3a3a3a;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+.cancel-btn:hover:not(:disabled) {
+  background-color: #3a3a3a;
+  color: #F5F5F5;
+  border-color: #4a4a4a;
+  transform: translateY(-1px);
+}
+
+.cancel-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Botón Principal - Acento Rojo para Pregnancia */
+.submit-btn {
+  background: linear-gradient(135deg, #143c4d, #0f2d3a);
+  color: #F5F5F5;
+  border: none;
+  padding: 14px 32px;
+  border-radius: 12px;
+  font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 140px;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(208, 28, 28, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.submit-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.submit-btn:hover:not(:disabled)::before {
+  left: 100%;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0f2d3a, #143c4d);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(208, 28, 28, 0.4);
+}
+
+.submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(208, 28, 28, 0.3);
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 2px 8px rgba(208, 28, 28, 0.2);
+}
+
+.submit-btn.loading {
+  background: linear-gradient(135deg, #143c4d, #0f2d3a);
+}
+
+.submit-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Spinner del botón */
+.btn-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .create-post-overlay {
+    padding: 16px;
+  }
+  
+  .create-post-container {
+    max-width: 100%;
+    border-radius: 16px;
+  }
+  
+  .create-post-header {
+    padding: 20px 24px;
+  }
+  
+  .create-post-title {
+    font-size: 20px;
+  }
+  
+  .create-post-form {
+    padding: 24px;
+    gap: 20px;
+  }
+  
+  .post-content-textarea {
+    font-size: 15px;
+    padding: 16px;
+    min-height: 120px;
+  }
+  
+  .form-actions {
+    flex-direction: column-reverse;
+    gap: 12px;
+  }
+  
+  .cancel-btn,
+  .submit-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 16px 24px;
+  }
+  
+  .image-upload-area {
+    padding: 30px 16px;
+  }
+  
+  .upload-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .upload-text {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .create-post-overlay {
+    padding: 12px;
+  }
+  
+  .create-post-container {
+    border-radius: 12px;
+  }
+  
+  .create-post-header {
+    padding: 16px 20px;
+  }
+  
+  .create-post-title {
+    font-size: 18px;
+  }
+  
+  .create-post-form {
+    padding: 20px;
+    gap: 16px;
+  }
+  
+  .post-content-textarea {
+    font-size: 14px;
+    padding: 14px;
+    min-height: 100px;
+  }
+  
+  .image-upload-area {
+    padding: 24px 12px;
+  }
+  
+  .upload-icon {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .upload-text {
+    font-size: 14px;
+  }
+  
+  .upload-hint {
+    font-size: 12px;
+  }
+}
+
+/* Accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  .create-post-overlay,
+  .create-post-container,
+  .status-message,
+  .progress-fill::after,
+  .submit-btn::before,
+  .btn-spinner {
+    animation: none;
+  }
+  
+  .submit-btn:hover:not(:disabled),
+  .cancel-btn:hover:not(:disabled) {
+    transform: none;
+  }
+}
+
+/* Modo de alto contraste */
+@media (prefers-contrast: high) {
+  .create-post-container {
+    border: 2px solid #F5F5F5;
+  }
+  
+  .create-post-title {
+    color: #F5F5F5;
+    background: none;
+    -webkit-text-fill-color: #F5F5F5;
+  }
+  
+  .post-content-textarea {
+    border: 2px solid #F5F5F5;
+  }
+  
+  .post-content-textarea:focus {
+    border-color: #D01C1C;
+  }
+  
+  .image-upload-area {
+    border: 2px dashed #F5F5F5;
+  }
+}
