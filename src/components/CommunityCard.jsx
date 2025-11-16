@@ -100,7 +100,7 @@ const CommunityCard = ({ community, isJoined, onJoin, onLeave, currentUserId }) 
                 </>
               )}
             </svg>
-            {isJoined ? 'UNIDO' : 'UNIRSE'}
+            {isJoined ? 'Unido' : 'Unirse'}
           </button>
         ) : (
           <div className="login-prompt">

@@ -153,6 +153,11 @@ const Messages = () => {
     )
   }
 
+  const handleNewMessage = () => {
+    // TODO: Implementar modal o navegación para nuevo mensaje
+    console.log('Nuevo mensaje')
+  }
+
   return (
     <div className="messages-container">
       {/* Layout de doble columna en escritorio */}
@@ -161,6 +166,33 @@ const Messages = () => {
         <div className="messages-sidebar">
           <div className="messages-header">
             <h1 className="messages-title">Mensajes</h1>
+            <div className="messages-header-actions">
+              <button className="messages-header-icon-btn" title="Configuración">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="3"/>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                </svg>
+              </button>
+              <button className="messages-header-icon-btn" onClick={handleNewMessage} title="Nuevo mensaje">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div className="messages-search">
+            <div className="messages-search-container">
+              <svg className="messages-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="M21 21l-4.35-4.35"/>
+              </svg>
+              <input
+                type="text"
+                className="messages-search-input"
+                placeholder="Buscar Mensajes Directos"
+              />
+            </div>
           </div>
 
           <div className="messages-list">
@@ -176,33 +208,28 @@ const Messages = () => {
                   className={`chat-item ${selectedChatId === chat.id ? 'chat-item-active' : ''}`}
                   onClick={() => handleChatClick(chat.id)}
                 >
-                  <UserLink 
-                    user={{
-                      id: chat.otherUser.id,
-                      display_name: chat.otherUser.display_name,
-                      username: chat.otherUser.username,
-                      avatar_url: chat.otherUser.avatar_url,
-                      email: chat.otherUser.email
-                    }}
-                    size="medium"
-                    showAvatar={true}
-                    showName={false}
-                  />
+                  <div className="chat-item-avatar">
+                    {chat.otherUser.avatar_url ? (
+                      <img 
+                        src={chat.otherUser.avatar_url} 
+                        alt={chat.otherUser.display_name || chat.otherUser.username}
+                      />
+                    ) : (
+                      <div className="chat-item-avatar-placeholder">
+                        {(chat.otherUser.display_name?.charAt(0) || chat.otherUser.username?.charAt(0) || 'U').toUpperCase()}
+                      </div>
+                    )}
+                  </div>
                   <div className="chat-item-content">
                     <div className="chat-item-header">
-                      <UserLink 
-                        user={{
-                          id: chat.otherUser.id,
-                          display_name: chat.otherUser.display_name,
-                          username: chat.otherUser.username,
-                          avatar_url: chat.otherUser.avatar_url,
-                          email: chat.otherUser.email
-                        }}
-                        size="small"
-                        showAvatar={false}
-                        showName={true}
-                        className="chat-item-name-link"
-                      />
+                      <div className="chat-item-user-info">
+                        <span className="chat-item-name">
+                          {chat.otherUser.display_name || chat.otherUser.username}
+                        </span>
+                        <span className="chat-item-username">
+                          @{chat.otherUser.username || chat.otherUser.email?.split('@')[0]}
+                        </span>
+                      </div>
                       {chat.lastMessage && (
                         <span className="chat-item-time">
                           {formatLastMessageTime(chat.lastMessage.created_at)}
@@ -223,15 +250,19 @@ const Messages = () => {
           </div>
         </div>
 
-        {/* Columna derecha: Chat activo o estado vacío */}
+        {/* Columna central: Mensaje de bienvenida o Chat activo */}
         <div className="messages-main">
           {selectedChatId ? (
             <ChatWindow chatId={selectedChatId} onClose={handleCloseChat} />
           ) : (
-            <div className="messages-empty-state">
-              <div className="empty-state-icon">💬</div>
-              <h2 className="empty-state-title">Selecciona una conversación</h2>
-              <p className="empty-state-text">Elige un chat de la lista para comenzar a conversar</p>
+            <div className="messages-welcome">
+              <h2 className="messages-welcome-title">¡Te damos la bienvenida a tu bandeja de entrada!</h2>
+              <p className="messages-welcome-text">
+                Envía una frase, comparte posts y mucho más con las conversaciones privadas entre tú y otras personas en AniVerse.
+              </p>
+              <button className="messages-welcome-button" onClick={handleNewMessage}>
+                Escribir un mensaje
+              </button>
             </div>
           )}
         </div>

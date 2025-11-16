@@ -11,6 +11,9 @@ const ChatWindow = ({ chatId, onClose }) => {
   const [currentUserId, setCurrentUserId] = useState(null)
   const [otherUser, setOtherUser] = useState(null)
   const [chatInfo, setChatInfo] = useState(null)
+  const [followersCount, setFollowersCount] = useState(0)
+  const [userCreatedAt, setUserCreatedAt] = useState(null)
+  const [mutualFollowers, setMutualFollowers] = useState([])
   const messagesEndRef = useRef(null)
   const channelRef = useRef(null)
 
@@ -55,7 +58,7 @@ const ChatWindow = ({ chatId, onClose }) => {
         // Obtener información del otro usuario
         const { data: otherUserProfile } = await supabase
           .from('users')
-          .select('display_name, username, avatar_url, email')
+          .select('display_name, username, avatar_url, email, created_at')
           .eq('id', otherUserId)
           .single()
 
@@ -64,6 +67,42 @@ const ChatWindow = ({ chatId, onClose }) => {
             id: otherUserId,
             ...otherUserProfile
           })
+          setUserCreatedAt(otherUserProfile.created_at)
+        }
+
+        // Obtener número de seguidores
+        const { count: followersCount } = await supabase
+          .from('user_follows')
+          .select('id', { count: 'exact', head: true })
+          .eq('following_id', otherUserId)
+
+        setFollowersCount(followersCount || 0)
+
+        // Obtener seguidores mutuos (usuarios que el usuario actual sigue y que también siguen al otro usuario)
+        const { data: currentUserFollowing } = await supabase
+          .from('user_follows')
+          .select('following_id')
+          .eq('follower_id', user.id)
+
+        if (currentUserFollowing && currentUserFollowing.length > 0) {
+          const followingIds = currentUserFollowing.map(f => f.following_id)
+          const { data: mutual } = await supabase
+            .from('user_follows')
+            .select('follower_id')
+            .eq('following_id', otherUserId)
+            .in('follower_id', followingIds)
+            .limit(3)
+
+          if (mutual && mutual.length > 0) {
+            const mutualIds = mutual.map(m => m.follower_id)
+            const { data: mutualUsers } = await supabase
+              .from('users')
+              .select('display_name, username')
+              .in('id', mutualIds)
+              .limit(3)
+
+            setMutualFollowers(mutualUsers || [])
+          }
         }
 
         // Cargar mensajes existentes
@@ -178,23 +217,22 @@ const ChatWindow = ({ chatId, onClose }) => {
   // Formatear fecha/hora del mensaje
   const formatMessageTime = (timestamp) => {
     const date = new Date(timestamp)
-    const now = new Date()
-    const diff = now - date
-    const minutes = Math.floor(diff / 60000)
-    const hours = Math.floor(minutes / 60)
-    const days = Math.floor(hours / 24)
-
-    if (minutes < 1) return 'Ahora'
-    if (minutes < 60) return `Hace ${minutes} min`
-    if (hours < 24) return `Hace ${hours} h`
-    if (days === 1) return 'Ayer'
-    if (days < 7) return `Hace ${days} días`
+    const hours = date.getHours()
+    const minutes = date.getMinutes()
+    const ampm = hours >= 12 ? 'p. m.' : 'a. m.'
+    const displayHours = hours % 12 || 12
+    const displayMinutes = minutes < 10 ? `0${minutes}` : minutes
     
-    return date.toLocaleDateString('es-ES', {
-      day: 'numeric',
-      month: 'short',
-      year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
-    })
+    return `${displayHours}:${displayMinutes} ${ampm} • Enviado`
+  }
+
+  // Formatear fecha de unión
+  const formatJoinDate = (timestamp) => {
+    if (!timestamp) return ''
+    const date = new Date(timestamp)
+    const month = date.toLocaleDateString('es-ES', { month: 'long' })
+    const year = date.getFullYear()
+    return `Se unió el ${month} de ${year}`
   }
 
   if (loading) {
@@ -222,45 +260,46 @@ const ChatWindow = ({ chatId, onClose }) => {
     <div className="chat-window">
       {/* Header del chat */}
       <div className="chat-header">
-        <div className="chat-header-info">
-          <UserLink 
-            user={{
-              id: otherUser.id,
-              display_name: otherUser.display_name,
-              username: otherUser.username,
-              avatar_url: otherUser.avatar_url,
-              email: otherUser.email
-            }}
-            size="medium"
-            showAvatar={true}
-            showName={false}
-          />
-          <div className="chat-user-info">
-            <UserLink 
-              user={{
-                id: otherUser.id,
-                display_name: otherUser.display_name,
-                username: otherUser.username,
-                avatar_url: otherUser.avatar_url,
-                email: otherUser.email
-              }}
-              size="small"
-              showAvatar={false}
-              showName={true}
-              className="chat-user-name-link"
-            />
-            <p className="chat-user-username">
-              @{otherUser.username || otherUser.email?.split('@')[0]}
-            </p>
-          </div>
+        <h2 className="chat-header-name">{otherUser.display_name || otherUser.username}</h2>
+        <button className="chat-info-button" title="Información">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+        </button>
+      </div>
+
+      {/* Perfil del usuario */}
+      <div className="chat-profile-section">
+        <div className="chat-profile-avatar-large">
+          {otherUser.avatar_url ? (
+            <img src={otherUser.avatar_url} alt={otherUser.display_name} />
+          ) : (
+            <div className="chat-profile-avatar-placeholder">
+              {(otherUser.display_name?.charAt(0) || otherUser.username?.charAt(0) || 'U').toUpperCase()}
+            </div>
+          )}
         </div>
-        {onClose && (
-          <button className="chat-close-button" onClick={onClose}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
+        <h3 className="chat-profile-name">{otherUser.display_name || otherUser.username}</h3>
+        <p className="chat-profile-username">@{otherUser.username || otherUser.email?.split('@')[0]}</p>
+        <div className="chat-profile-info">
+          {userCreatedAt && (
+            <span className="chat-profile-joined">{formatJoinDate(userCreatedAt)}</span>
+          )}
+          <span className="chat-profile-separator">•</span>
+          <span className="chat-profile-followers">{followersCount} Seguidores</span>
+        </div>
+        {mutualFollowers.length > 0 && (
+          <p className="chat-profile-mutual">
+            {mutualFollowers.length === 1 
+              ? `${mutualFollowers[0].display_name || mutualFollowers[0].username} `
+              : mutualFollowers.length === 2
+              ? `${mutualFollowers[0].display_name || mutualFollowers[0].username} y ${mutualFollowers[1].display_name || mutualFollowers[1].username} `
+              : `${mutualFollowers.slice(0, 2).map(u => u.display_name || u.username).join(', ')} y más `
+            }
+            de las cuentas que sigues siguen a este usuario
+          </p>
         )}
       </div>
 
@@ -292,29 +331,45 @@ const ChatWindow = ({ chatId, onClose }) => {
 
       {/* Formulario de envío */}
       <form className="chat-input-form" onSubmit={handleSendMessage}>
+        <div className="chat-input-icons">
+          <button type="button" className="chat-input-icon-btn" title="Imagen">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+          </button>
+          <button type="button" className="chat-input-icon-btn" title="GIF">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+            </svg>
+          </button>
+          <button type="button" className="chat-input-icon-btn" title="Emoji">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+              <line x1="9" y1="9" x2="9.01" y2="9"/>
+              <line x1="15" y1="9" x2="15.01" y2="9"/>
+            </svg>
+          </button>
+        </div>
         <input
           type="text"
           className="chat-input"
-          placeholder="Escribe un mensaje..."
+          placeholder="Escribe un mensaje"
           value={messageContent}
           onChange={(e) => setMessageContent(e.target.value)}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault()
+              handleSendMessage(e)
+            }
+          }}
           disabled={sending}
           maxLength={1000}
         />
-        <button
-          type="submit"
-          className="chat-send-button"
-          disabled={!messageContent.trim() || sending}
-        >
-          {sending ? (
-            <div className="send-spinner"></div>
-          ) : (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="22" y1="2" x2="11" y2="13" />
-              <polygon points="22 2 15 22 11 13 2 9 22 2" />
-            </svg>
-          )}
-        </button>
       </form>
     </div>
   )

@@ -87,6 +87,8 @@
   background: #143c4d;
   color: #F5F5F5;
   font-weight: 700;
+  border: none;
+  outline: none;
 }
 
 .view-selector-tab svg {

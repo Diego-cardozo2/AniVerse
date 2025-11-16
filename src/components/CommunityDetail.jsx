@@ -281,7 +281,7 @@ const CommunityDetail = ({ communityId }) => {
               onClick={handleJoinToggle}
               className={`join-button ${isJoined ? 'joined' : 'join'}`}
             >
-              {isJoined ? 'UNIDO' : 'UNIRSE'}
+              {isJoined ? 'Unido' : 'Unirse'}
             </button>
           )}
         </div>
