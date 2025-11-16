@@ -308,16 +308,11 @@
 .nav-item-active {
   color: #D01C1C;
   background: rgba(208, 28, 28, 0.1);
+  border: none;
 }
 
 .nav-item-active::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  background: #143c4d;
+  display: none;
 }
 
 .nav-item-icon {

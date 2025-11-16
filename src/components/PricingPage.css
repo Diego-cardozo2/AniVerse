@@ -82,7 +82,7 @@
 
 .pricing-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(20, 60, 77, 0.2);
+  box-shadow: none;
 }
 
 .pricing-card.featured {
@@ -93,7 +93,7 @@
 
 .pricing-card.featured:hover {
   transform: scale(1.05) translateY(-4px);
-  box-shadow: 0 12px 32px rgba(20, 60, 77, 0.4);
+  box-shadow: none;
 }
 
 .plan-badge {
@@ -262,7 +262,7 @@
 .plan-button.featured-button:hover:not(:disabled) {
   background: #0f2d3a !important;
   border: 2px solid #0f2d3a !important;
-  box-shadow: 0 6px 20px rgba(20, 60, 77, 0.4) !important;
+  box-shadow: none !important;
   outline: none !important;
 }
 
@@ -306,12 +306,12 @@
   border-color: #0f2d3a;
   color: #F5F5F5;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(20, 60, 77, 0.4);
+  box-shadow: none;
 }
 
 .plan-button.subscribe-button:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: 0 2px 6px rgba(20, 60, 77, 0.3);
+  box-shadow: none;
 }
 
 .plan-button.subscribe-button:disabled {

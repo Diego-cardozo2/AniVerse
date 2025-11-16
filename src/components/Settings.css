@@ -159,6 +159,16 @@
   background: #000000;
 }
 
+/* Cuando se muestra Premium, permitir más ancho en el contenedor */
+.settings-content.premium-content-wrapper {
+  max-width: 100%;
+}
+
+.settings-content .premium-content {
+  max-width: 1400px;
+  width: 100%;
+}
+
 .settings-back-button {
   display: flex;
   align-items: center;
@@ -197,6 +207,15 @@
 /* Cuando se muestra Premium, permitir más ancho */
 .settings-main.premium-content {
   max-width: 1400px;
+  width: 100%;
+}
+
+/* Asegurar que el grid de pricing se muestre horizontalmente */
+.settings-main.premium-content .pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 48px;
 }
 
 .settings-content-title {
