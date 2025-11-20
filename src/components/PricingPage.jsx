@@ -190,7 +190,7 @@ const PricingPage = () => {
               </button>
             ) : (
               <button 
-                className="plan-button"
+                className="plan-button subscribe-button"
                 onClick={() => handleSelectPlan('freemium')}
               >
                 Seleccionar Plan
@@ -229,10 +229,10 @@ const PricingPage = () => {
               </button>
             ) : (
               <button 
-                className="plan-button subscribe-button"
+                className="plan-button featured-button"
                 onClick={() => handleSelectPlan('fan_starter')}
               >
-                Suscribirse
+                Seleccionar Plan
               </button>
             )}
           </div>
@@ -266,10 +266,10 @@ const PricingPage = () => {
               </button>
             ) : (
               <button 
-                className="plan-button subscribe-button"
-                onClick={() => handleSelectPlan('pro_otaku')}
+                className="plan-button coming-soon-button"
+                disabled
               >
-                Suscribirse
+                POST MVP
               </button>
             )}
           </div>

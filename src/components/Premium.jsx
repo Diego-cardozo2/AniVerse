@@ -99,7 +99,7 @@ const Premium = () => {
               </button>
             ) : (
               <button 
-                className="plan-button"
+                className="plan-button subscribe-button"
                 onClick={() => handleSelectPlan('freemium')}
               >
                 Seleccionar Plan
@@ -173,7 +173,7 @@ const Premium = () => {
               className="plan-button coming-soon-button"
               disabled
             >
-              Próximamente (POST MVP)
+              POST MVP
             </button>
           </div>
         </div>

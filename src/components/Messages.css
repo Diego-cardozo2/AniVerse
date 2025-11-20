@@ -125,7 +125,7 @@
 }
 
 .messages-welcome-button {
-  background: linear-gradient(135deg, #143c4d, #0f2d3a);
+  background: #3e63f8;
   color: #FFFFFF;
   border: none;
   border-radius: 24px;
@@ -138,7 +138,7 @@
 }
 
 .messages-welcome-button:hover {
-  background: linear-gradient(135deg, #0f2d3a, #143c4d);
+  background: #5a7fff;
   transform: translateY(-2px);
 }
 

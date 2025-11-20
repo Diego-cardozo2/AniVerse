@@ -101,7 +101,7 @@
   top: -12px;
   left: 50%;
   transform: translateX(-50%);
-  background: #143c4d;
+  background: #3e63f8;
   color: #F5F5F5;
   padding: 6px 16px;
   border-radius: 20px;
@@ -252,41 +252,41 @@
 }
 
 .plan-button.featured-button {
-  background: #143c4d !important;
-  border: 2px solid #143c4d !important;
+  background: #6a4df2 !important;
+  border: 2px solid #6a4df2 !important;
   color: #F5F5F5 !important;
   outline: none !important;
   box-shadow: none !important;
 }
 
 .plan-button.featured-button:hover:not(:disabled) {
-  background: #0f2d3a !important;
-  border: 2px solid #0f2d3a !important;
+  background: #5a3dd9 !important;
+  border: 2px solid #5a3dd9 !important;
   box-shadow: none !important;
   outline: none !important;
 }
 
 .plan-button.featured-button:focus {
   outline: none !important;
-  border: 2px solid #143c4d !important;
+  border: 2px solid #6a4df2 !important;
 }
 
 .plan-button.featured-button:active {
-  border: 2px solid #143c4d !important;
+  border: 2px solid #6a4df2 !important;
   box-shadow: none !important;
 }
 
 .plan-button.current-plan {
-  background: #1a3a1a;
-  border-color: #2a5a2a;
-  color: #a0ffa0;
+  background: #3e63f8;
+  border-color: #3e63f8;
+  color: #F5F5F5;
   cursor: not-allowed;
-  opacity: 0.8;
+  opacity: 1;
 }
 
 .plan-button.coming-soon-button {
   background: #282828;
-  border-color: #333;
+  border: 1px solid #333;
   color: #666;
   cursor: not-allowed;
   opacity: 0.6;
@@ -295,15 +295,15 @@
 
 /* Botón de Suscripción - Acción Positiva (Color de la app) */
 .plan-button.subscribe-button {
-  background: #143c4d;
-  border: 2px solid #143c4d;
+  background: #6a4df2;
+  border: 2px solid #6a4df2;
   color: #F5F5F5;
   font-weight: 700;
 }
 
 .plan-button.subscribe-button:hover:not(:disabled) {
-  background: #0f2d3a;
-  border-color: #0f2d3a;
+  background: #5a3dd9;
+  border-color: #5a3dd9;
   color: #F5F5F5;
   transform: translateY(-2px);
   box-shadow: none;

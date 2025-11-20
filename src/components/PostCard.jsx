@@ -199,7 +199,7 @@ const PostCard = ({ post, currentUserId }) => {
         </button>
 
         <button className="share-button" aria-label="Compartir">
-          <svg className="share-icon" viewBox="0 0 24 24" fill="none" stroke="#F5F5F5" strokeWidth="2">
+          <svg className="share-icon" viewBox="0 0 24 24" fill="none" stroke="#3e63f8" strokeWidth="2">
             <circle cx="18" cy="5" r="3"/>
             <circle cx="6" cy="12" r="3"/>
             <circle cx="18" cy="19" r="3"/>

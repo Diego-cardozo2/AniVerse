@@ -14,7 +14,7 @@
 
 .profile-cover {
   height: 200px;
-  background: linear-gradient(135deg, #D01C1C 0%, #ff6b35 100%);
+  background: #1a1a1a;
   position: relative;
   overflow: hidden;
 }
@@ -96,7 +96,7 @@
   font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-weight: 500;
   font-size: 1.1rem;
-  color: #D01C1C;
+  color: #F5F5F5;
   margin: 0;
 }
 
@@ -143,7 +143,7 @@
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background: #143c4d;
+  background: #3e63f8;
   color: #F5F5F5;
   border: none;
   border-radius: 8px;
@@ -155,9 +155,9 @@
 }
 
 .profile-edit-button:hover {
-  background: #0f2d3a;
+  background: #5a7fff;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(208, 28, 28, 0.3);
+  box-shadow: 0 4px 12px rgba(62, 99, 248, 0.3);
 }
 
 .profile-edit-button svg {
@@ -196,7 +196,7 @@
   font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-weight: 700;
   font-size: 2rem;
-  color: #D01C1C;
+  color: #F5F5F5;
   margin-bottom: 4px;
 }
 
@@ -204,7 +204,7 @@
   font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-weight: 500;
   font-size: 0.9rem;
-  color: #a0a0a0;
+  color: #F5F5F5;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -278,10 +278,10 @@
   gap: 12px;
   width: 100%;
   padding: 16px;
-  background: #282828;
-  border: 1px solid #333;
+  background: #3e63f8;
+  border: none;
   border-radius: 10px;
-  color: #a0a0a0;
+  color: #F5F5F5;
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -291,19 +291,20 @@
 }
 
 .setting-button:hover {
-  background: #333;
-  border-color: #D01C1C;
+  background: #5a7fff;
+  border: none;
   color: #F5F5F5;
 }
 
 .setting-button.danger {
-  border-color: #D01C1C;
-  color: #D01C1C;
+  border: none;
+  background: #3e63f8;
+  color: #F5F5F5;
 }
 
 .setting-button.danger:hover {
-  background: rgba(208, 28, 28, 0.1);
-  color: #ff6b6b;
+  background: #5a7fff;
+  color: #F5F5F5;
 }
 
 .setting-button svg {

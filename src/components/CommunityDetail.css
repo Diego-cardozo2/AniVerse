@@ -97,12 +97,12 @@
 }
 
 .join-button.join {
-  background: #143c4d;
+  background: #6A4DF2;
   color: #F5F5F5;
 }
 
 .join-button.join:hover {
-  background: #0f2d3a;
+  background: #5a3dd9;
   transform: translateY(-1px);
 }
 

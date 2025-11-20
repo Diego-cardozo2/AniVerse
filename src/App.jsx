@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import HomeFeed from './components/HomeFeed.jsx'
 import Communities from './components/Communities.jsx'
-import CommunityDetail from './components/CommunityDetail.jsx'
+import CommunityPage from './components/CommunityPage.jsx'
 import Profile from './components/Profile.jsx'
 import AuthForm from './components/AuthForm.jsx'
 import Sidebar from './components/Sidebar.jsx'
@@ -69,7 +69,7 @@ function App() {
         // Forzar actualización del parámetro
         const params = router.getCurrentParams()
         console.log('📍 Parámetros de ruta:', params)
-        return <CommunityDetail key={params.communityId} communityId={params.communityId} />
+        return <CommunityPage key={params.communityId} communityId={params.communityId} />
       })
     }
     if (!router.routes['premium']) router.addRoute('premium', () => <Premium />)

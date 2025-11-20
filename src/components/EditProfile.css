@@ -146,8 +146,8 @@
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background: #282828;
-  border: 1px solid #333;
+  background: #3e63f8;
+  border: 1px solid #3e63f8;
   border-radius: 8px;
   color: #F5F5F5;
   font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -158,8 +158,8 @@
 }
 
 .avatar-upload-button:hover {
-  background: #333;
-  border-color: #D01C1C;
+  background: #5a7fff;
+  border-color: #5a7fff;
 }
 
 .avatar-upload-button svg {
@@ -295,25 +295,26 @@
 }
 
 .edit-profile-button.cancel {
-  background: #282828;
-  color: #a0a0a0;
-  border: 1px solid #333;
+  background: #3e63f8;
+  color: #F5F5F5;
+  border: 1px solid #3e63f8;
 }
 
 .edit-profile-button.cancel:hover:not(:disabled) {
-  background: #333;
+  background: #5a7fff;
+  border-color: #5a7fff;
   color: #F5F5F5;
 }
 
 .edit-profile-button.save {
-  background: #143c4d;
+  background: #3e63f8;
   color: #F5F5F5;
 }
 
 .edit-profile-button.save:hover:not(:disabled) {
-  background: #0f2d3a;
+  background: #5a7fff;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(208, 28, 28, 0.3);
+  box-shadow: 0 4px 12px rgba(62, 99, 248, 0.3);
 }
 
 .button-spinner {

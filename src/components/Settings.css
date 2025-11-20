@@ -490,7 +490,7 @@
 }
 
 .settings-checkbox input:checked + .settings-checkbox-mark {
-  background: linear-gradient(135deg, #143c4d, #0f2d3a);
+  background: #3e63f8;
 }
 
 .settings-checkbox input:checked + .settings-checkbox-mark:before {
@@ -540,7 +540,7 @@
 }
 
 .settings-muted-option input:checked + .settings-checkbox-square {
-  background: linear-gradient(135deg, #143c4d, #0f2d3a);
+  background: #3e63f8;
   border-color: transparent;
 }
 

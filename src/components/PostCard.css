@@ -203,6 +203,16 @@
   transition: all 0.2s ease;
 }
 
+/* Botón de compartir - Azul */
+.share-button {
+  color: #3e63f8;
+}
+
+.share-button:hover {
+  background-color: rgba(62, 99, 248, 0.1);
+  color: #5a7fff;
+}
+
 .like-button.liked .like-icon {
   transform: scale(1.1);
 }
