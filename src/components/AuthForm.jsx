@@ -133,6 +133,7 @@ const AuthForm = ({ onAuthSuccess }) => {
         email: email.trim(),
         password: password.trim(),
         options: {
+          emailRedirectTo: `${window.location.origin}`,
           data: {
             display_name: displayName.trim(),
             username: username.trim(),
@@ -312,6 +313,44 @@ const AuthForm = ({ onAuthSuccess }) => {
         password: password.trim()
       })
 
+      // Si hay error por email no confirmado, intentar confirmar automáticamente
+      if (error && error.message.includes('Email not confirmed')) {
+        console.log('Email no confirmado, intentando confirmar automáticamente...')
+        
+        try {
+          // Primero intentar usar la función edge si está disponible
+          const { data: functionData, error: functionError } = await supabase.functions.invoke(
+            'login-without-email-confirmation',
+            {
+              body: {
+                email: email.trim(),
+                password: password.trim()
+              }
+            }
+          )
+
+          if (!functionError && functionData && functionData.session) {
+            // Establecer la sesión manualmente
+            const { error: sessionError } = await supabase.auth.setSession({
+              access_token: functionData.session.access_token,
+              refresh_token: functionData.session.refresh_token
+            })
+
+            if (!sessionError) {
+              console.log('Login exitoso (sin confirmar email):', functionData.user.email)
+              setSuccess('¡Inicio de sesión exitoso!')
+              onAuthSuccess(functionData.user)
+              return
+            }
+          }
+        } catch (functionErr) {
+          console.error('Error en función edge:', functionErr)
+        }
+        
+        // Si la función edge no está disponible, mostrar mensaje más claro
+        console.error('No se pudo confirmar el email automáticamente. Por favor, confirma tu email en Supabase Dashboard o crea un nuevo usuario.')
+      }
+
       if (error) {
         console.error('Error de autenticación:', error)
         throw error
@@ -332,7 +371,8 @@ const AuthForm = ({ onAuthSuccess }) => {
       if (error.message.includes('Invalid login credentials')) {
         setError('Email o contraseña incorrectos')
       } else if (error.message.includes('Email not confirmed')) {
-        setError('Por favor confirma tu email antes de iniciar sesión')
+        // Ya se intentó manejar arriba, mostrar mensaje informativo
+        setError('Tu email no está confirmado. Por favor, confirma tu email o contacta al administrador.')
       } else if (error.message.includes('Too many requests')) {
         setError('Demasiados intentos. Espera un momento antes de intentar de nuevo')
       } else {
@@ -584,7 +624,7 @@ const AuthForm = ({ onAuthSuccess }) => {
           {/* Mensajes de estado */}
           {error && (
             <div className="status-message error">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#D01C1C" strokeWidth="2">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#F5F5F5" strokeWidth="2">
                 <circle cx="12" cy="12" r="10"/>
                 <line x1="15" y1="9" x2="9" y2="15"/>
                 <line x1="9" y1="9" x2="15" y2="15"/>
@@ -619,33 +659,29 @@ const AuthForm = ({ onAuthSuccess }) => {
               </>
             ) : (
               <>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  {mode === 'login' ? (
-                    <>
-                      <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
-                      <polyline points="10,17 15,12 10,7"/>
-                      <line x1="15" y1="12" x2="3" y2="12"/>
-                    </>
-                  ) : mode === 'signup' ? (
-                    <>
-                      <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                      <circle cx="8.5" cy="7" r="4"/>
-                      <line x1="20" y1="8" x2="20" y2="14"/>
-                      <line x1="23" y1="11" x2="17" y2="11"/>
-                    </>
-                  ) : mode === 'forgot-password' ? (
-                    <>
-                      <circle cx="12" cy="12" r="10"/>
-                      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-                      <line x1="12" y1="17" x2="12.01" y2="17"/>
-                    </>
-                  ) : (
-                    <>
-                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                      <polyline points="22,4 12,14.01 9,11.01"/>
-                    </>
-                  )}
-                </svg>
+                {mode !== 'login' && (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    {mode === 'signup' ? (
+                      <>
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                        <circle cx="8.5" cy="7" r="4"/>
+                        <line x1="20" y1="8" x2="20" y2="14"/>
+                        <line x1="23" y1="11" x2="17" y2="11"/>
+                      </>
+                    ) : mode === 'forgot-password' ? (
+                      <>
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                      </>
+                    ) : (
+                      <>
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22,4 12,14.01 9,11.01"/>
+                      </>
+                    )}
+                  </svg>
+                )}
                 {mode === 'login' ? 'Iniciar Sesión' : 
                  mode === 'signup' ? 'Crear Cuenta' :
                  mode === 'forgot-password' ? 'Enviar Enlace' :

@@ -175,7 +175,7 @@
 .forgot-password-btn {
   background: none;
   border: none;
-  color: #D01C1C;
+  color: #F5F5F5;
   font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
   font-weight: 500;
   font-size: 14px;
@@ -186,8 +186,9 @@
 }
 
 .forgot-password-btn:hover {
-  color: #ff4444;
+  color: #F5F5F5;
   text-decoration: underline;
+  opacity: 0.8;
 }
 
 .forgot-password-btn:disabled {
@@ -235,8 +236,8 @@
 
 .status-message.error {
   background-color: rgba(208, 28, 28, 0.1);
-  border: 1px solid rgba(208, 28, 28, 0.3);
-  color: #D01C1C;
+  border: none;
+  color: #F5F5F5;
 }
 
 .status-message.success {
@@ -251,9 +252,9 @@
   flex-shrink: 0;
 }
 
-/* Botón Principal - Acento Rojo para Pregnancia */
+/* Botón Principal - Acento Violeta para Pregnancia */
 .auth-submit-btn {
-  background: linear-gradient(135deg, #143c4d, #0f2d3a);
+  background: #6a4df2;
   color: #F5F5F5;
   border: none;
   padding: 18px 24px;
@@ -267,7 +268,7 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  box-shadow: 0 4px 16px rgba(208, 28, 28, 0.3);
+  box-shadow: 0 4px 16px rgba(106, 77, 242, 0.3);
   position: relative;
   overflow: hidden;
   min-height: 56px;
@@ -289,25 +290,25 @@
 }
 
 .auth-submit-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #0f2d3a, #143c4d);
+  background: #5a3dd9;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(208, 28, 28, 0.4);
+  box-shadow: 0 6px 20px rgba(106, 77, 242, 0.4);
 }
 
 .auth-submit-btn:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(208, 28, 28, 0.3);
+  box-shadow: 0 2px 8px rgba(106, 77, 242, 0.3);
 }
 
 .auth-submit-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
-  box-shadow: 0 2px 8px rgba(208, 28, 28, 0.2);
+  box-shadow: 0 2px 8px rgba(106, 77, 242, 0.2);
 }
 
 .auth-submit-btn.loading {
-  background: linear-gradient(135deg, #143c4d, #0f2d3a);
+  background: #6a4df2;
 }
 
 .auth-submit-btn svg {
@@ -345,7 +346,7 @@
   font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
   font-weight: 400;
   font-size: 14px;
-  color: #a0a0a0;
+  color: #F5F5F5;
   margin: 0;
   line-height: 1.4;
 }
@@ -353,19 +354,22 @@
 .switch-btn {
   background: none;
   border: none;
-  color: #D01C1C;
+  color: #F5F5F5;
   font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
   text-decoration: underline;
+  text-decoration-color: #D01C1C;
   text-underline-offset: 4px;
 }
 
 .switch-btn:hover:not(:disabled) {
-  color: #ff4444;
+  color: #F5F5F5;
   text-decoration-thickness: 2px;
+  text-decoration-color: #D01C1C;
+  opacity: 0.8;
 }
 
 .switch-btn:disabled {
@@ -384,20 +388,22 @@
   font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
   font-weight: 400;
   font-size: 12px;
-  color: #666;
+  color: #F5F5F5;
   margin: 0;
   line-height: 1.5;
 }
 
 .info-link {
-  color: #D01C1C;
+  color: #F5F5F5;
+  font-weight: 700;
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .info-link:hover {
-  color: #ff4444;
+  color: #F5F5F5;
   text-decoration: underline;
+  opacity: 0.8;
 }
 
 /* Responsive */
@@ -538,11 +544,14 @@
 }
 
 /* Mejoras de enfoque para accesibilidad */
-.form-input:focus,
-.auth-submit-btn:focus,
-.switch-btn:focus {
+.form-input:focus {
   outline: 2px solid #D01C1C;
   outline-offset: 2px;
+}
+
+.auth-submit-btn:focus,
+.switch-btn:focus {
+  outline: none;
 }
 
 /* Estados de validación */

@@ -6,7 +6,7 @@
   justify-content: center;
   gap: 8px;
   padding: 10px 20px;
-  background-color: #143c4d;
+  background-color: #3e63f8;
   color: #F5F5F5;
   border: none;
   border-radius: 8px;
@@ -20,14 +20,14 @@
 }
 
 .message-button:hover:not(:disabled) {
-  background-color: #0f2d3a;
+  background-color: #5a7fff;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(208, 28, 28, 0.3);
+  box-shadow: 0 4px 12px rgba(62, 99, 248, 0.3);
 }
 
 .message-button:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: 0 2px 6px rgba(208, 28, 28, 0.2);
+  box-shadow: 0 2px 6px rgba(62, 99, 248, 0.2);
 }
 
 .message-button:disabled {

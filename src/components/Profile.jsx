@@ -60,19 +60,61 @@ const Profile = ({ userId = null }) => {
         return
       }
       
-      // Obtener información del usuario objetivo
-      const { data: targetUser, error: userError } = await supabase.auth.admin?.getUserById?.(targetUserId) || {}
-      
-      // Si no podemos obtener desde auth, obtener desde la tabla users
+      // Obtener información del usuario desde la tabla users
       const { data: profile, error: profileError } = await supabase
         .from('users')
         .select('*')
         .eq('id', targetUserId)
         .single()
 
-      if (profileError && profileError.code !== 'PGRST116') {
-        console.error('Error al obtener perfil:', profileError)
-        setError('Error al cargar el perfil')
+      if (profileError) {
+        // Si el error es que no se encontró el registro, verificar si es el usuario actual
+        if (profileError.code === 'PGRST116' || profileError.message?.includes('No rows')) {
+          // Si es el usuario actual y no existe en la tabla users, crear el perfil
+          if (!userId && currentUser) {
+            try {
+              const { data: newProfile, error: insertError } = await supabase
+                .from('users')
+                .insert([
+                  {
+                    id: currentUser.id,
+                    email: currentUser.email,
+                    username: currentUser.user_metadata?.username || currentUser.email?.split('@')[0],
+                    display_name: currentUser.user_metadata?.display_name || currentUser.user_metadata?.username || currentUser.email?.split('@')[0],
+                    avatar_url: currentUser.user_metadata?.avatar_url || null,
+                    bio: null
+                  }
+                ])
+                .select()
+                .single()
+
+              if (insertError && !insertError.message?.includes('duplicate')) {
+                console.error('Error al crear perfil:', insertError)
+                setError('Error al crear el perfil')
+              } else if (newProfile) {
+                setUserProfile(newProfile)
+                setUser({
+                  id: newProfile.id,
+                  email: newProfile.email,
+                  user_metadata: {
+                    display_name: newProfile.display_name,
+                    username: newProfile.username,
+                    avatar_url: newProfile.avatar_url
+                  },
+                  created_at: newProfile.created_at || currentUser.created_at
+                })
+              }
+            } catch (insertErr) {
+              console.error('Error al insertar perfil:', insertErr)
+              setError('Error al crear el perfil')
+            }
+          } else {
+            setError('Usuario no encontrado')
+          }
+        } else {
+          console.error('Error al obtener perfil:', profileError)
+          setError('Error al cargar el perfil')
+        }
       } else if (profile) {
         setUserProfile(profile)
         
@@ -130,6 +172,22 @@ const Profile = ({ userId = null }) => {
     loadUserData()
   }, [userId])
 
+  // Sincronizar user con userProfile si userProfile existe pero user no
+  useEffect(() => {
+    if (userProfile && !user) {
+      setUser({
+        id: userProfile.id,
+        email: userProfile.email,
+        user_metadata: {
+          display_name: userProfile.display_name,
+          username: userProfile.username,
+          avatar_url: userProfile.avatar_url
+        },
+        created_at: userProfile.created_at
+      })
+    }
+  }, [userProfile, user])
+
   // Mostrar modo de edición si está activo
   if (isEditing && !userId) {
     return (
@@ -153,19 +211,39 @@ const Profile = ({ userId = null }) => {
   }
 
   // Mostrar error
-  if (error || !user) {
+  if (error && !userProfile) {
     return (
       <div className="profile-container">
         <div className="error-container">
           <div className="error-icon">⚠️</div>
           <h3 className="error-title">Error al cargar perfil</h3>
           <p className="error-text">{error || 'Usuario no encontrado'}</p>
-          <button className="retry-button" onClick={() => window.location.reload()}>
+          <button className="retry-button" onClick={() => {
+            setError(null)
+            loadUserData()
+          }}>
             Reintentar
           </button>
         </div>
       </div>
     )
+  }
+
+  // Si aún no hay datos, mostrar carga
+  if (!user && !userProfile && !error) {
+    return (
+      <div className="profile-container">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p className="loading-text">Cargando perfil...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Si no hay usuario ni perfil pero hay error, ya se mostró arriba
+  if (!user && !userProfile) {
+    return null
   }
 
   return (
@@ -178,11 +256,11 @@ const Profile = ({ userId = null }) => {
         
         <div className="profile-info">
           <div className="profile-avatar-large">
-            {userProfile?.avatar_url || user.user_metadata?.avatar_url ? (
-              <img src={userProfile?.avatar_url || user.user_metadata.avatar_url} alt={user.email} />
+            {userProfile?.avatar_url || user?.user_metadata?.avatar_url ? (
+              <img src={userProfile?.avatar_url || user?.user_metadata?.avatar_url} alt={userProfile?.email || user?.email || ''} />
             ) : (
               <div className="default-avatar-large">
-                {(userProfile?.display_name || userProfile?.username || user.email)?.charAt(0).toUpperCase()}
+                {(userProfile?.display_name || userProfile?.username || user?.user_metadata?.display_name || user?.user_metadata?.username || user?.email || userProfile?.email)?.charAt(0).toUpperCase()}
               </div>
             )}
           </div>
@@ -190,10 +268,10 @@ const Profile = ({ userId = null }) => {
           <div className="profile-details">
             <div className="profile-name-username">
               <h1 className="profile-name">
-                {userProfile?.display_name || user?.user_metadata?.display_name || user?.user_metadata?.username || user?.email?.split('@')[0]}
+                {userProfile?.display_name || user?.user_metadata?.display_name || userProfile?.username || user?.user_metadata?.username || user?.email?.split('@')[0] || userProfile?.email?.split('@')[0]}
               </h1>
               <p className="profile-username">
-                @{userProfile?.username || user?.user_metadata?.username || user?.email?.split('@')[0]}
+                @{userProfile?.username || user?.user_metadata?.username || user?.email?.split('@')[0] || userProfile?.email?.split('@')[0]}
               </p>
             </div>
             
@@ -271,18 +349,18 @@ const Profile = ({ userId = null }) => {
               <div className="info-item">
                 <span className="info-label">Nombre:</span>
                 <span className="info-value">
-                  {user.user_metadata?.display_name || 'No especificado'}
+                  {userProfile?.display_name || user?.user_metadata?.display_name || 'No especificado'}
                 </span>
               </div>
               <div className="info-item">
                 <span className="info-label">Usuario:</span>
                 <span className="info-value">
-                  {user.user_metadata?.username || user.email?.split('@')[0]}
+                  {userProfile?.username || user?.user_metadata?.username || user?.email?.split('@')[0] || userProfile?.email?.split('@')[0]}
                 </span>
               </div>
               <div className="info-item">
                 <span className="info-label">Email:</span>
-                <span className="info-value">{user.email}</span>
+                <span className="info-value">{userProfile?.email || user?.email || ''}</span>
               </div>
               {userProfile?.bio && (
                 <div className="info-item">
@@ -293,7 +371,7 @@ const Profile = ({ userId = null }) => {
               <div className="info-item">
                 <span className="info-label">Miembro desde:</span>
                 <span className="info-value">
-                  {new Date(user.created_at).toLocaleDateString('es-ES', {
+                  {new Date(userProfile?.created_at || user?.created_at || new Date()).toLocaleDateString('es-ES', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
