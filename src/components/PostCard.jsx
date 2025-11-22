@@ -192,14 +192,14 @@ const PostCard = ({ post, currentUserId }) => {
           onClick={() => setShowComments(!showComments)}
           aria-label="Comentar"
         >
-          <svg className="comment-icon" viewBox="0 0 24 24" fill="none" stroke="#F5F5F5" strokeWidth="2">
+          <svg className="comment-icon" viewBox="0 0 24 24" fill="none" stroke="#D01C1C" strokeWidth="2">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
           </svg>
           <span className="comment-count">{commentsCount}</span>
         </button>
 
         <button className="share-button" aria-label="Compartir">
-          <svg className="share-icon" viewBox="0 0 24 24" fill="none" stroke="#3e63f8" strokeWidth="2">
+          <svg className="share-icon" viewBox="0 0 24 24" fill="none" stroke="#D01C1C" strokeWidth="2">
             <circle cx="18" cy="5" r="3"/>
             <circle cx="6" cy="12" r="3"/>
             <circle cx="18" cy="19" r="3"/>
