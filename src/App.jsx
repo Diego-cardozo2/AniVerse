@@ -9,6 +9,7 @@ import PricingPage from './components/PricingPage.jsx'
 import Premium from './components/Premium.jsx'
 import Messages from './components/Messages.jsx'
 import Settings from './components/Settings.jsx'
+import CreateCommunity from './components/CreateCommunity.jsx'
 import { supabase } from './lib/supabaseClient.js'
 import { router } from './lib/router.jsx'
 import './App.css'
@@ -17,7 +18,13 @@ function App() {
   const [showAuth, setShowAuth] = useState(true)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  // Sidebar cerrado por defecto en móvil, abierto en desktop
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth > 768
+    }
+    return false
+  })
   const [currentPage, setCurrentPage] = useState('home')
   const [routeKey, setRouteKey] = useState(0) // Forzar re-render cuando cambia la ruta
 
@@ -74,6 +81,7 @@ function App() {
     }
     if (!router.routes['premium']) router.addRoute('premium', () => <Premium />)
     if (!router.routes['pricing']) router.addRoute('pricing', () => <PricingPage />)
+    if (!router.routes['create-community']) router.addRoute('create-community', () => <CreateCommunity />)
     if (!router.routes['profile']) router.addRoute('profile', () => <Profile />)
     if (!router.routes['profile-detail']) {
       router.addRoute('profile-detail', () => {
@@ -159,6 +167,20 @@ function App() {
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen)
   }
+  
+  // Ajustar sidebar cuando cambia el tamaño de la ventana
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setSidebarOpen(true)
+      } else {
+        setSidebarOpen(false)
+      }
+    }
+    
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   // Obtener componente actual
   const getCurrentComponent = () => {
@@ -317,9 +339,20 @@ function App() {
         <AuthForm onAuthSuccess={handleAuthSuccess} />
       ) : (
         <>
-          {/* Header limpio - sin menú hamburguesa en desktop */}
+          {/* Header con botón de menú para móvil */}
           <header className="app-header">
             <div className="header-content">
+              <button 
+                className="menu-toggle"
+                onClick={toggleSidebar}
+                aria-label="Abrir menú"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="3" y1="6" x2="21" y2="6"/>
+                  <line x1="3" y1="12" x2="21" y2="12"/>
+                  <line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
+              </button>
               <div className="header-logo" onClick={() => handleNavigation('home')}>
                 <img 
                   src="/logo.png" 

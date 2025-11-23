@@ -238,9 +238,10 @@
   font-family: 'Nunito Sans', 'Segoe UI', 'Roboto', sans-serif;
   font-weight: 500;
   font-size: 16px;
-  color: #D01C1C;
+  color: #F5F5F5;
   margin: 0 0 8px 0;
   line-height: 1.4;
+  text-decoration: underline;
 }
 
 .upload-hint {
@@ -433,9 +434,9 @@
   transform: none;
 }
 
-/* Botón Principal - Acento Rojo para Pregnancia */
+/* Botón Principal - Violeta para Pregnancia */
 .submit-btn {
-  background: linear-gradient(135deg, #143c4d, #0f2d3a);
+  background: #6a4df2;
   color: #F5F5F5;
   border: none;
   padding: 14px 32px;
@@ -450,7 +451,7 @@
   gap: 8px;
   min-width: 140px;
   justify-content: center;
-  box-shadow: 0 4px 16px rgba(208, 28, 28, 0.3);
+  box-shadow: 0 4px 16px rgba(106, 77, 242, 0.4);
   position: relative;
   overflow: hidden;
 }
@@ -471,25 +472,25 @@
 }
 
 .submit-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #0f2d3a, #143c4d);
+  background: #5a3dd9;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(208, 28, 28, 0.4);
+  box-shadow: 0 6px 20px rgba(106, 77, 242, 0.5);
 }
 
 .submit-btn:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(208, 28, 28, 0.3);
+  box-shadow: 0 2px 8px rgba(106, 77, 242, 0.3);
 }
 
 .submit-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
-  box-shadow: 0 2px 8px rgba(208, 28, 28, 0.2);
+  box-shadow: 0 2px 8px rgba(106, 77, 242, 0.2);
 }
 
 .submit-btn.loading {
-  background: linear-gradient(135deg, #143c4d, #0f2d3a);
+  background: #6a4df2;
 }
 
 .submit-btn svg {

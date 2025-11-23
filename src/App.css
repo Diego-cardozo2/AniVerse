@@ -20,6 +20,11 @@
 /* Header de la aplicación */
 .app-header {
   display: none; /* Oculto en desktop ya que la sidebar está siempre visible */
+  position: sticky;
+  top: 0;
+  z-index: 997;
+  background: #131313;
+  border-bottom: 1px solid #333;
 }
 
 .header-content {
@@ -138,11 +143,16 @@
 
 @media (max-width: 768px) {
   .app-header {
+    display: block;
     margin-left: 0;
+    width: 100%;
   }
   
   .app-main {
     margin-left: 0;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
   }
 }
 

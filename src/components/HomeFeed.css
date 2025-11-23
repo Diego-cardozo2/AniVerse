@@ -343,11 +343,20 @@
 /* Responsive */
 @media (max-width: 768px) {
   .home-feed {
+    padding: 0;
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+  }
+  
+  .feed-header {
+    border-left: none;
+    border-right: none;
     padding: 16px;
   }
   
   .feed-title {
-    font-size: 28px;
+    font-size: 24px;
   }
   
   .feed-subtitle {
@@ -358,6 +367,16 @@
     position: static;
     margin-top: 12px;
     justify-content: center;
+  }
+  
+  .posts-container {
+    border-left: none;
+    border-right: none;
+  }
+  
+  .feed-composer-wrapper {
+    border-left: none;
+    border-right: none;
   }
   
   .empty-icon {

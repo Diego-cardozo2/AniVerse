@@ -103,22 +103,22 @@
   right: 20px;
   width: 56px;
   height: 56px;
-  background-color: #143c4d;
+  background-color: #6a4df2;
   border: none;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: none;
+  box-shadow: 0 4px 12px rgba(106, 77, 242, 0.4);
   transition: all 0.3s ease;
   z-index: 100;
 }
 
 .floating-create-community-button:hover {
-  background-color: #0f2d3a;
+  background-color: #5a3dd9;
   transform: translateY(-2px) scale(1.05);
-  box-shadow: none;
+  box-shadow: 0 6px 16px rgba(106, 77, 242, 0.5);
 }
 
 .floating-create-community-button:active {
@@ -327,7 +327,7 @@
 
 .clear-search-btn,
 .explore-communities-btn {
-  background: #143c4d;
+  background: #3E63F8;
   color: #F5F5F5;
   border: none;
   padding: 10px 20px;
@@ -341,7 +341,9 @@
 
 .clear-search-btn:hover,
 .explore-communities-btn:hover {
-  background: #0f2d3a;
+  background: #2d4fd8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(62, 99, 248, 0.4);
 }
 
 .loading-indicator {
@@ -364,15 +366,32 @@
 @media (max-width: 768px) {
   .communities-container {
     padding: 16px;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
   }
   
   .communities-title {
-    font-size: 2rem;
+    font-size: 1.75rem;
+  }
+  
+  .communities-subtitle {
+    font-size: 0.95rem;
   }
   
   .communities-grid {
     grid-template-columns: 1fr;
     gap: 16px;
+    padding: 0;
+    max-width: 100%;
+  }
+  
+  .search-container {
+    max-width: 100%;
+  }
+  
+  .view-selector-container {
+    max-width: 100%;
   }
 
   .floating-create-community-button {

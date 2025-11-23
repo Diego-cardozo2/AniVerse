@@ -436,6 +436,11 @@
     width: 280px;
     position: fixed;
     transform: translateX(-100%);
+    z-index: 999;
+  }
+  
+  .sidebar-closed {
+    transform: translateX(-100%);
   }
   
   .sidebar-open {

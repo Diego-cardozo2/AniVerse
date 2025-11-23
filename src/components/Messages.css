@@ -470,6 +470,7 @@
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
+    position: relative;
   }
 
   .messages-sidebar {
@@ -479,6 +480,18 @@
     border-right: none;
     border-bottom: 1px solid rgba(58, 58, 58, 0.3);
     flex-shrink: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 1;
+    transition: transform 0.3s ease;
+    background: #000000;
+  }
+  
+  /* Ocultar sidebar cuando hay un chat seleccionado en móvil */
+  .messages-layout.chat-selected .messages-sidebar {
+    transform: translateX(-100%);
   }
 
   .messages-main {
@@ -488,6 +501,22 @@
     min-width: 0;
     overflow-x: hidden;
     border-right: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 2;
+    transition: transform 0.3s ease;
+    background: #000000;
+  }
+  
+  /* Mostrar solo el chat cuando está seleccionado en móvil */
+  .messages-layout:not(.chat-selected) .messages-main {
+    transform: translateX(100%);
+  }
+  
+  .messages-layout.chat-selected .messages-main {
+    transform: translateX(0);
   }
 
 
@@ -498,19 +527,19 @@
   }
 
   .messages-title {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
   }
 
   .messages-list {
     width: 100%;
     max-width: 100%;
-    padding: 12px 8px;
+    padding: 8px 4px;
   }
 
   .chat-item {
-    padding: 14px 16px;
-    gap: 12px;
-    margin: 3px 4px;
+    padding: 12px 14px;
+    gap: 10px;
+    margin: 2px 4px;
     width: calc(100% - 8px);
     max-width: 100%;
     box-sizing: border-box;
@@ -521,13 +550,21 @@
   }
 
   .chat-item-name {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     max-width: 100%;
+  }
+  
+  .chat-item-username {
+    font-size: 0.8rem;
   }
 
   .chat-item-preview {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     max-width: 100%;
+  }
+  
+  .chat-item-time {
+    font-size: 0.7rem;
   }
 
   .chat-item-active {

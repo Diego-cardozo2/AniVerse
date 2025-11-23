@@ -161,7 +161,7 @@ const Messages = () => {
   return (
     <div className="messages-container">
       {/* Layout de doble columna en escritorio */}
-      <div className="messages-layout">
+      <div className={`messages-layout ${selectedChatId ? 'chat-selected' : ''}`}>
         {/* Columna izquierda: Lista de chats */}
         <div className="messages-sidebar">
           <div className="messages-header">

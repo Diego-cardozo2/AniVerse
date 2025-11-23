@@ -260,7 +260,19 @@ const ChatWindow = ({ chatId, onClose }) => {
     <div className="chat-window">
       {/* Header del chat */}
       <div className="chat-header">
-        <h2 className="chat-header-name">{otherUser.display_name || otherUser.username}</h2>
+        <div className="chat-header-left">
+          <button 
+            className="chat-back-button" 
+            onClick={onClose}
+            title="Volver a mensajes"
+            aria-label="Volver a mensajes"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+          </button>
+          <h2 className="chat-header-name">{otherUser.display_name || otherUser.username}</h2>
+        </div>
         <button className="chat-info-button" title="Información">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="12" cy="12" r="10"/>

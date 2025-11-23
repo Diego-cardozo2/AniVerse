@@ -13,30 +13,61 @@ const Communities = () => {
   const [currentUserId, setCurrentUserId] = useState(null)
   const [userMemberships, setUserMemberships] = useState(new Set())
   const [activeView, setActiveView] = useState('explore')
-  const [userSubscriptionPlan, setUserSubscriptionPlan] = useState('freemium')
+  const [userRole, setUserRole] = useState('FREEMIUM')
 
-  // Obtener usuario actual y su plan de suscripción
+  // Obtener usuario actual y su rol
   useEffect(() => {
     const getCurrentUser = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser()
+        const { data: { user }, error: userError } = await supabase.auth.getUser()
+        
+        if (userError) {
+          console.error('Error al obtener usuario:', userError)
+          setCurrentUserId(null)
+          setUserRole('FREEMIUM')
+          return
+        }
+        
         setCurrentUserId(user?.id || null)
         
-        // Obtener plan de suscripción del usuario
+        // Obtener rol del usuario (user_role)
         if (user) {
-          const { data: profile } = await supabase
+          const { data: profile, error: profileError } = await supabase
             .from('users')
-            .select('subscription_plan')
+            .select('user_role')
             .eq('id', user.id)
             .single()
           
-          setUserSubscriptionPlan(profile?.subscription_plan || 'freemium')
+          if (profileError) {
+            console.error('Error al obtener perfil:', profileError)
+            setUserRole('FREEMIUM')
+            return
+          }
+          
+          const role = profile?.user_role || 'FREEMIUM'
+          setUserRole(role)
+          console.log('✅ Rol del usuario cargado en Communities:', role)
+        } else {
+          setUserRole('FREEMIUM')
         }
       } catch (error) {
         console.error('Error al obtener usuario:', error)
+        setUserRole('FREEMIUM')
       }
     }
     getCurrentUser()
+    
+    // Recargar el rol cuando la página se vuelve visible (por si cambió en otra pestaña)
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        getCurrentUser()
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
   }, [])
 
   // Cargar comunidades
@@ -154,22 +185,35 @@ const Communities = () => {
 
   // Manejar clic en botón "Crear Comunidad"
   const handleCreateCommunity = () => {
+    console.log('🔍 Verificando acceso a crear comunidad...')
+    console.log('   - currentUserId:', currentUserId)
+    console.log('   - userRole:', userRole)
+    
     if (!currentUserId) {
       setError('Debes iniciar sesión para crear una comunidad')
       return
     }
 
-    // Verificar si el usuario está en plan Freemium
-    if (userSubscriptionPlan === 'freemium' || !userSubscriptionPlan) {
-      // Redirigir a la página de precios
-      router.navigate('pricing')
-    } else {
-      // Redirigir al formulario de creación de comunidad
-      // Por ahora, simplemente navegar a una ruta placeholder
-      // TODO: Implementar formulario de creación de comunidad
+    // Verificar el rol del usuario
+    // ADMIN puede saltarse todas las restricciones
+    if (userRole === 'ADMIN') {
+      console.log('✅ Usuario ADMIN - Acceso permitido')
       router.navigate('create-community')
-      setError('La función de creación de comunidad estará disponible próximamente')
+      return
     }
+
+    // FAN_STARTER y PRO_OTAKU pueden crear comunidades
+    const isAllowed = userRole === 'FAN_STARTER' || userRole === 'PRO_OTAKU'
+    
+    if (isAllowed) {
+      console.log('✅ Usuario con plan de pago - Acceso permitido')
+      router.navigate('create-community')
+      return
+    }
+
+    // FREEMIUM o cualquier otro rol: redirigir a la página de precios
+    console.log('❌ Usuario FREEMIUM - Redirigiendo a pricing')
+    router.navigate('pricing')
   }
 
   if (loading && communities.length === 0) {

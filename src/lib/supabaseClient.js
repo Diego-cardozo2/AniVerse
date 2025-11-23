@@ -470,10 +470,13 @@ export const aniVerseServices = {
       try {
         console.log('Creando comunidad:', communityData)
         
+        // Filtrar campos que no existen en la tabla
+        const { is_private, ...validData } = communityData
+        
         const { data, error } = await supabase
           .from('communities')
           .insert({
-            ...communityData,
+            ...validData,
             created_by: userId,
             slug: communityData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
           })

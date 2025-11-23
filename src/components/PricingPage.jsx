@@ -12,17 +12,36 @@ const PricingPage = () => {
       try {
         const { data: { user } } = await supabase.auth.getUser()
         if (user) {
-          // Obtener el plan de suscripción del usuario
-          const { data: profile } = await supabase
+          // Obtener el user_role del usuario (no subscription_plan)
+          const { data: profile, error: profileError } = await supabase
             .from('users')
-            .select('subscription_plan')
+            .select('user_role')
             .eq('id', user.id)
             .single()
           
+          if (profileError) {
+            console.error('Error al obtener perfil:', profileError)
+            setLoading(false)
+            return
+          }
+          
+          const userRole = profile?.user_role || 'FREEMIUM'
+          
+          console.log('📊 Datos del perfil obtenidos:', {
+            profile,
+            userRole,
+            userId: user.id
+          })
+          
           setCurrentUser({
             id: user.id,
-            subscription_plan: profile?.subscription_plan || 'freemium'
+            user_role: userRole
           })
+          
+          console.log('✅ User role en PricingPage cargado:', userRole)
+          console.log('✅ Estado currentUser actualizado:', { id: user.id, user_role: userRole })
+        } else {
+          setCurrentUser(null)
         }
         setLoading(false)
       } catch (error) {
@@ -30,8 +49,17 @@ const PricingPage = () => {
         setLoading(false)
       }
     }
+    
     getCurrentUser()
-
+    
+    // Recargar el rol cuando la página se vuelve visible (por si cambió en otra pestaña)
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        getCurrentUser()
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    
     // Manejar el retorno de Stripe Checkout
     const urlParams = new URLSearchParams(window.location.search)
     const success = urlParams.get('success')
@@ -50,6 +78,10 @@ const PricingPage = () => {
       alert('El pago fue cancelado. Puedes intentar de nuevo cuando estés listo.')
       // Limpiar la URL
       window.history.replaceState({}, document.title, window.location.pathname)
+    }
+    
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [])
 
@@ -184,9 +216,9 @@ const PricingPage = () => {
             </ul>
           </div>
           <div className="plan-footer">
-            {currentUser?.subscription_plan === 'freemium' ? (
+            {currentUser?.user_role === 'FREEMIUM' ? (
               <button className="plan-button current-plan" disabled>
-                Plan Actual
+                <span className="current-plan-badge">TU PLAN ACTUAL</span>
               </button>
             ) : (
               <button 
@@ -223,18 +255,26 @@ const PricingPage = () => {
             </ul>
           </div>
           <div className="plan-footer">
-            {currentUser?.subscription_plan === 'fan_starter' ? (
-              <button className="plan-button current-plan" disabled>
-                Plan Actual
-              </button>
-            ) : (
-              <button 
-                className="plan-button featured-button"
-                onClick={() => handleSelectPlan('fan_starter')}
-              >
-                Seleccionar Plan
-              </button>
-            )}
+            {(() => {
+              const isCurrentPlan = currentUser?.user_role === 'FAN_STARTER'
+              console.log('🔍 Fan Starter - Verificando plan actual:', {
+                currentUser,
+                userRole: currentUser?.user_role,
+                isCurrentPlan
+              })
+              return isCurrentPlan ? (
+                <button className="plan-button current-plan" disabled>
+                  <span className="current-plan-badge">TU PLAN ACTUAL</span>
+                </button>
+              ) : (
+                <button 
+                  className="plan-button featured-button"
+                  onClick={() => handleSelectPlan('fan_starter')}
+                >
+                  Seleccionar Plan
+                </button>
+              )
+            })()}
           </div>
         </div>
 
@@ -260,9 +300,9 @@ const PricingPage = () => {
             </ul>
           </div>
           <div className="plan-footer">
-            {currentUser?.subscription_plan === 'pro_otaku' ? (
+            {currentUser?.user_role === 'PRO_OTAKU' ? (
               <button className="plan-button current-plan" disabled>
-                Plan Actual
+                <span className="current-plan-badge">TU PLAN ACTUAL</span>
               </button>
             ) : (
               <button 

@@ -27,12 +27,46 @@
   box-sizing: border-box;
 }
 
+.chat-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.chat-back-button {
+  display: none; /* Oculto en desktop */
+  background: transparent;
+  border: none;
+  color: #F5F5F5;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.chat-back-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.chat-back-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
 .chat-header-name {
   font-family: 'Nunito Sans', sans-serif;
   font-weight: 700;
   font-size: 1.25rem;
   color: #F5F5F5;
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .chat-info-button {
@@ -60,14 +94,35 @@
 }
 
 /* Sección de perfil */
-.chat-profile-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 32px 24px;
-  border-bottom: 1px solid rgba(58, 58, 58, 0.3);
-  text-align: center;
-}
+  .chat-profile-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px;
+    border-bottom: 1px solid rgba(58, 58, 58, 0.3);
+    text-align: center;
+  }
+  
+  .chat-profile-avatar-large {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .chat-profile-name {
+    font-size: 1.1rem;
+  }
+  
+  .chat-profile-username {
+    font-size: 0.85rem;
+  }
+  
+  .chat-profile-info {
+    font-size: 0.8rem;
+  }
+  
+  .chat-profile-mutual {
+    font-size: 0.8rem;
+  }
 
 .chat-profile-avatar-large {
   width: 120px;
@@ -439,10 +494,20 @@
     overflow-x: hidden;
   }
 
+  .chat-back-button {
+    display: flex; /* Mostrar en móvil */
+    align-items: center;
+    justify-content: center;
+  }
+
   .chat-header {
     padding: 12px 16px;
     width: 100%;
     max-width: 100%;
+  }
+  
+  .chat-header-name {
+    font-size: 1.1rem;
   }
 
   .chat-header-info {
@@ -450,11 +515,39 @@
   }
 
   .chat-messages {
-    padding: 16px;
-    gap: 10px;
+    padding: 12px;
+    gap: 8px;
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
+  }
+  
+  .chat-profile-section {
+    padding: 20px 12px;
+  }
+  
+  .chat-profile-avatar-large {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 12px;
+  }
+  
+  .chat-profile-name {
+    font-size: 1rem;
+  }
+  
+  .chat-profile-username {
+    font-size: 0.8rem;
+  }
+  
+  .chat-profile-info {
+    font-size: 0.75rem;
+    flex-wrap: wrap;
+  }
+  
+  .chat-profile-mutual {
+    font-size: 0.75rem;
+    padding: 0 12px;
   }
 
   .message {
