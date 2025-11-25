@@ -213,6 +213,29 @@ const CommunityPage = ({ communityId }) => {
 
   return (
     <div className="community-page-container">
+      {/* Barra superior con navegación */}
+      <div className="community-top-bar">
+        <button 
+          className="community-back-button"
+          onClick={() => router.navigate('communities')}
+          aria-label="Volver a comunidades"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+        </button>
+        <h2 className="community-top-title">{community.name}</h2>
+        <button 
+          className="community-search-button"
+          aria-label="Buscar"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="M21 21l-4.35-4.35"/>
+          </svg>
+        </button>
+      </div>
+
       {/* Header con imagen de portada y avatar superpuesto */}
       <div className="community-header-section">
         <div className="community-cover-container">
@@ -228,7 +251,7 @@ const CommunityPage = ({ communityId }) => {
             </div>
           )}
           
-          {/* Avatar superpuesto */}
+          {/* Avatar superpuesto en la parte inferior izquierda */}
           <div className="community-avatar-overlay">
             <div className="community-avatar-large">
               {community.avatar_url ? (
@@ -243,27 +266,36 @@ const CommunityPage = ({ communityId }) => {
         {/* Información de la comunidad */}
         <div className="community-info-section">
           <div className="community-info-content">
-            <h1 className="community-title">{community.name}</h1>
-            <p className="community-description">{community.description || 'Sin descripción'}</p>
-            
-            <div className="community-stats">
-              <span className="stat-item">
-                <strong>{formatMemberCount(community.member_count || 0)}</strong> miembros
-              </span>
-              <span className="stat-item">
-                <strong>{posts.length}</strong> publicaciones
+            <div className="community-header-info">
+              <h1 className="community-title">{community.name}</h1>
+              <span className="community-category-tag">
+                {community.category || 'General'}
               </span>
             </div>
-
-            {/* Botón Unirse/Unido */}
-            {currentUserId && (
-              <button
-                onClick={handleJoinToggle}
-                className={`community-join-button ${isJoined ? 'joined' : 'join'}`}
-              >
-                {isJoined ? 'Unido' : 'Unirse'}
-              </button>
-            )}
+            
+            <p className="community-description">
+              {community.description || 'Sin descripción'}
+            </p>
+            
+            <div className="community-meta-row">
+              <div className="community-members-preview">
+                <span className="member-avatars-placeholder">👥</span>
+                <span className="member-count-text">
+                  {formatMemberCount(community.member_count || 0)} miembros
+                </span>
+              </div>
+              
+              <div className="community-actions">
+                {currentUserId && (
+                  <button
+                    onClick={handleJoinToggle}
+                    className={`community-join-button ${isJoined ? 'joined' : 'join'}`}
+                  >
+                    {isJoined ? 'Unido' : 'Unirse'}
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
