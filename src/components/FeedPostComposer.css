@@ -177,12 +177,12 @@
 }
 
 .post-button:not(.disabled) {
-  background: #1DA1F2;
+  background: #6A4DF2;
   color: #F5F5F5;
 }
 
 .post-button:not(.disabled):hover {
-  background: #1a8cd8;
+  background: #5a3dd9;
   transform: translateY(-1px);
 }
 

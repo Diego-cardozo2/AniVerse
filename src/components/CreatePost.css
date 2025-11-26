@@ -68,10 +68,6 @@
   margin: 0;
   letter-spacing: -0.03em;
   line-height: 1.1;
-  background: linear-gradient(135deg, #F5F5F5, #D01C1C);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .create-post-close {

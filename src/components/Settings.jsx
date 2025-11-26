@@ -561,10 +561,10 @@ const Settings = () => {
                       </button>
                     ) : (
                       <button 
-                        className="plan-button subscribe-button"
-                        onClick={() => handleSelectPlan('pro_otaku')}
+                        className="plan-button coming-soon-button"
+                        disabled
                       >
-                        Suscribirse
+                        POST MVP
                       </button>
                     )}
                   </div>

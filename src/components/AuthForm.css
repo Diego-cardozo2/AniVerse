@@ -69,7 +69,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+}
+
+.auth-logo-image {
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 4px;
 }
 
 /* Título Principal - Máxima Jerarquía Geométrica */
@@ -421,12 +429,12 @@
     padding: 28px 24px 20px 24px;
   }
   
-  .auth-title {
-    font-size: 32px;
-  }
-  
   .auth-subtitle {
     font-size: 15px;
+  }
+  
+  .auth-logo-image {
+    max-width: 220px;
   }
   
   .auth-form {
@@ -463,12 +471,12 @@
     padding: 24px 20px 16px 20px;
   }
   
-  .auth-title {
-    font-size: 28px;
-  }
-  
   .auth-subtitle {
     font-size: 14px;
+  }
+  
+  .auth-logo-image {
+    max-width: 180px;
   }
   
   .auth-form {

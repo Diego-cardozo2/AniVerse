@@ -1,7 +1,7 @@
 santino.cagnoni@davinci.edu.ar
 santi1234
 
-diego.cardozo@davinci.edu.ar
+diego.cardozo@davinci.edu.ar(usuario con todos los roles)
 diego2303
 
 valentino.guezugutch@davinci.edu.ar

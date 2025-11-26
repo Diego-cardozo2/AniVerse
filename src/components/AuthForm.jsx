@@ -432,7 +432,11 @@ const AuthForm = ({ onAuthSuccess }) => {
         {/* Header del formulario */}
         <div className="auth-header">
           <div className="auth-logo">
-            <h1 className="auth-title">AniVerse</h1>
+            <img 
+              src="/logo.png" 
+              alt="AniVerse Logo" 
+              className="auth-logo-image"
+            />
             <p className="auth-subtitle">Tu comunidad de anime y manga</p>
           </div>
         </div>

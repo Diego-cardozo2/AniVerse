@@ -256,12 +256,6 @@ const HomeFeed = () => {
         </svg>
       </button>
 
-      {/* Indicador de conexión en tiempo real */}
-      <div className="realtime-indicator">
-        <div className="realtime-dot"></div>
-        <span>Tiempo real activo</span>
-      </div>
-
       {/* Modal de crear publicación */}
       <CreatePost
         isOpen={isCreateModalOpen}
