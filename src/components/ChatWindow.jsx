@@ -8,6 +8,7 @@ const ChatWindow = ({ chatId, onClose }) => {
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
   const [messageContent, setMessageContent] = useState('')
+  const [messageError, setMessageError] = useState(null)
   const [currentUserId, setCurrentUserId] = useState(null)
   const [otherUser, setOtherUser] = useState(null)
   const [chatInfo, setChatInfo] = useState(null)
@@ -182,12 +183,23 @@ const ChatWindow = ({ chatId, onClose }) => {
   const handleSendMessage = async (e) => {
     e.preventDefault()
 
-    if (!messageContent.trim() || !chatId || !currentUserId || sending) {
+    const contentTrimmed = messageContent.trim()
+    setMessageError(null)
+
+    if (!chatId || !currentUserId || sending) return
+
+    if (!contentTrimmed) {
+      setMessageError('Escribe un mensaje antes de enviar')
+      return
+    }
+    if (messageContent.length > 1000) {
+      setMessageError('El mensaje no puede superar 1000 caracteres')
       return
     }
 
     try {
       setSending(true)
+      setMessageError(null)
 
       const { error } = await supabase
         .from('messages')
@@ -195,7 +207,7 @@ const ChatWindow = ({ chatId, onClose }) => {
           {
             chat_id: chatId,
             sender_id: currentUserId,
-            content: messageContent.trim()
+            content: contentTrimmed
           }
         ])
 
@@ -203,12 +215,10 @@ const ChatWindow = ({ chatId, onClose }) => {
         throw error
       }
 
-      // Limpiar input
       setMessageContent('')
-      
     } catch (error) {
       console.error('Error al enviar mensaje:', error)
-      alert('Error al enviar el mensaje. Por favor, intenta de nuevo.')
+      setMessageError('Error al enviar el mensaje. Por favor, intenta de nuevo.')
     } finally {
       setSending(false)
     }
@@ -341,6 +351,13 @@ const ChatWindow = ({ chatId, onClose }) => {
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Mensaje de error de validación */}
+      {messageError && (
+        <div className="chat-message-error">
+          {messageError}
+        </div>
+      )}
+
       {/* Formulario de envío */}
       <form className="chat-input-form" onSubmit={handleSendMessage}>
         <div className="chat-input-icons">
@@ -372,7 +389,11 @@ const ChatWindow = ({ chatId, onClose }) => {
           className="chat-input"
           placeholder="Escribe un mensaje"
           value={messageContent}
-          onChange={(e) => setMessageContent(e.target.value)}
+          aria-label="Escribe un mensaje"
+          onChange={(e) => {
+            setMessageContent(e.target.value)
+            if (messageError) setMessageError(null)
+          }}
           onKeyPress={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault()

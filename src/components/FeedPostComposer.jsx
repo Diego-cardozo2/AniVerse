@@ -84,6 +84,10 @@ const FeedPostComposer = ({ onPostCreated, currentUserId }) => {
       setError('La publicación debe tener al menos 3 caracteres')
       return
     }
+    if (content.length > 500) {
+      setError('La publicación no puede superar 500 caracteres')
+      return
+    }
 
     setLoading(true)
     setError(null)
@@ -197,14 +201,20 @@ const FeedPostComposer = ({ onPostCreated, currentUserId }) => {
         <div className="composer-main">
           <form onSubmit={handleSubmit}>
             {/* Textarea */}
+            <label htmlFor="composer-textarea" className="sr-only">
+              ¿Qué está pasando?
+            </label>
             <textarea
               ref={textareaRef}
+              id="composer-textarea"
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="¿Qué está pasando?"
               className="composer-textarea"
               rows={1}
+              maxLength={500}
               disabled={loading}
+              aria-label="¿Qué está pasando?"
             />
 
             {/* Preview de imagen */}
@@ -263,6 +273,7 @@ const FeedPostComposer = ({ onPostCreated, currentUserId }) => {
               onChange={handleImageSelect}
               className="hidden-file-input"
               disabled={loading}
+              aria-label="Seleccionar imagen para la publicación"
             />
           </form>
 

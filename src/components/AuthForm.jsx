@@ -72,12 +72,14 @@ const AuthForm = ({ onAuthSuccess }) => {
 
   // Validación de formulario
   const validateForm = () => {
-    if (!email.trim()) {
+    const emailTrimmed = email.trim()
+    if (!emailTrimmed) {
       setError('El email es requerido')
       return false
     }
 
-    if (!email.includes('@')) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(emailTrimmed)) {
       setError('Por favor ingresa un email válido')
       return false
     }
@@ -93,21 +95,43 @@ const AuthForm = ({ onAuthSuccess }) => {
     }
 
     if (mode === 'signup') {
-      if (!displayName.trim()) {
-        setError('El nombre de usuario es requerido')
+      const displayNameTrimmed = displayName.trim()
+      if (!displayNameTrimmed) {
+        setError('El nombre para mostrar es requerido')
+        return false
+      }
+      if (displayNameTrimmed.length < 2) {
+        setError('El nombre para mostrar debe tener al menos 2 caracteres')
+        return false
+      }
+      if (displayNameTrimmed.length > 50) {
+        setError('El nombre para mostrar no puede superar 50 caracteres')
         return false
       }
 
-      if (!username.trim()) {
+      const usernameTrimmed = username.trim()
+      if (!usernameTrimmed) {
         setError('El nombre de usuario es requerido')
         return false
       }
-
-      if (username.length < 3) {
+      if (usernameTrimmed.length < 3) {
         setError('El nombre de usuario debe tener al menos 3 caracteres')
         return false
       }
+      if (usernameTrimmed.length > 30) {
+        setError('El nombre de usuario no puede superar 30 caracteres')
+        return false
+      }
+      const usernameRegex = /^[a-zA-Z0-9_]+$/
+      if (!usernameRegex.test(usernameTrimmed)) {
+        setError('El nombre de usuario solo puede contener letras, números y guión bajo')
+        return false
+      }
 
+      if (!confirmPassword.trim()) {
+        setError('Debes confirmar tu contraseña')
+        return false
+      }
       if (password !== confirmPassword) {
         setError('Las contraseñas no coinciden')
         return false
@@ -243,17 +267,19 @@ const AuthForm = ({ onAuthSuccess }) => {
   // Manejar reset de contraseña con el token
   const handleResetPassword = async (e) => {
     e.preventDefault()
-    
+
     if (!newPassword.trim()) {
       setError('La nueva contraseña es requerida')
       return
     }
-
     if (newPassword.length < 6) {
       setError('La contraseña debe tener al menos 6 caracteres')
       return
     }
-
+    if (!confirmPassword.trim()) {
+      setError('Debes confirmar tu nueva contraseña')
+      return
+    }
     if (newPassword !== confirmPassword) {
       setError('Las contraseñas no coinciden')
       return

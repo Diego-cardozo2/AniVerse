@@ -295,6 +295,7 @@ const Communities = () => {
               value={searchQuery}
               onChange={handleSearch}
               className="search-input"
+              aria-label={activeView === 'my-communities' ? "Buscar en tus comunidades" : "Buscar comunidades"}
             />
             {searchQuery && (
               <button

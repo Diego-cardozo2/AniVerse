@@ -9,6 +9,8 @@ const EditProfile = ({ onSave, onCancel }) => {
   const [success, setSuccess] = useState(false)
   
   // Estados del formulario
+  const [email, setEmail] = useState('')
+  const [displayName, setDisplayName] = useState('')
   const [username, setUsername] = useState('')
   const [bio, setBio] = useState('')
   const [currentAvatarUrl, setCurrentAvatarUrl] = useState(null)
@@ -53,11 +55,14 @@ const EditProfile = ({ onSave, onCancel }) => {
           console.error('Error al obtener perfil:', profileError)
           setError('Error al cargar el perfil')
         } else if (profile) {
+          setEmail(user.email || '')
+          setDisplayName(profile.display_name || user.user_metadata?.full_name || '')
           setUsername(profile.username || user.email?.split('@')[0] || '')
           setBio(profile.bio || '')
           setCurrentAvatarUrl(profile.avatar_url || null)
         } else {
-          // Si no existe el perfil, usar datos del email
+          setEmail(user.email || '')
+          setDisplayName(user.user_metadata?.full_name || '')
           setUsername(user.email?.split('@')[0] || '')
           setBio('')
           setCurrentAvatarUrl(null)
@@ -171,14 +176,50 @@ const EditProfile = ({ onSave, onCancel }) => {
     }
 
     // Validar username
-    if (!username.trim()) {
+    const usernameTrimmed = username.trim()
+    if (!usernameTrimmed) {
       setError('El nombre de usuario es requerido')
       return
     }
-
-    if (username.trim().length < 3) {
+    if (usernameTrimmed.length < 3) {
       setError('El nombre de usuario debe tener al menos 3 caracteres')
       return
+    }
+    if (usernameTrimmed.length > 30) {
+      setError('El nombre de usuario no puede superar 30 caracteres')
+      return
+    }
+    const usernameRegex = /^[a-zA-Z0-9_]+$/
+    if (!usernameRegex.test(usernameTrimmed)) {
+      setError('El nombre de usuario solo puede contener letras, números y guión bajo')
+      return
+    }
+
+    // Validar biografía (límite 500 caracteres)
+    if (bio.length > 500) {
+      setError('La biografía no puede superar 500 caracteres')
+      return
+    }
+
+    // Validar nombre para mostrar
+    const displayNameTrimmed = displayName.trim()
+    if (displayNameTrimmed.length > 0 && displayNameTrimmed.length < 2) {
+      setError('El nombre para mostrar debe tener al menos 2 caracteres')
+      return
+    }
+    if (displayName.length > 50) {
+      setError('El nombre para mostrar no puede superar 50 caracteres')
+      return
+    }
+
+    // Validar email si se editó
+    const emailTrimmed = email.trim()
+    if (emailTrimmed) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(emailTrimmed)) {
+        setError('Por favor ingresa un correo electrónico válido')
+        return
+      }
     }
 
     setSaving(true)
@@ -197,11 +238,23 @@ const EditProfile = ({ onSave, onCancel }) => {
         }
       }
 
+      // Actualizar email en Auth si cambió
+      const { data: { user } } = await supabase.auth.getUser()
+      if (emailTrimmed && user?.email !== emailTrimmed) {
+        const { error: emailError } = await supabase.auth.updateUser({ email: emailTrimmed })
+        if (emailError) {
+          throw new Error(emailError.message === 'Email rate limit exceeded'
+            ? 'Demasiados intentos. Espera un momento antes de cambiar el correo.'
+            : emailError.message)
+        }
+      }
+
       // Actualizar datos en la tabla users
       const { error: updateError } = await supabase
         .from('users')
         .update({
-          username: username.trim(),
+          username: usernameTrimmed,
+          display_name: displayNameTrimmed || null,
           bio: bio.trim() || null,
           avatar_url: avatarUrl
         })
@@ -213,11 +266,11 @@ const EditProfile = ({ onSave, onCancel }) => {
       }
 
       setSuccess(true)
-      
-      // Llamar callback si existe
+
       if (onSave) {
         onSave({
-          username: username.trim(),
+          username: usernameTrimmed,
+          display_name: displayNameTrimmed || null,
           bio: bio.trim() || null,
           avatar_url: avatarUrl
         })
@@ -331,6 +384,7 @@ const EditProfile = ({ onSave, onCancel }) => {
               onChange={handleAvatarSelect}
               className="hidden-file-input"
               disabled={saving}
+              aria-label="Seleccionar foto de perfil"
             />
           </div>
         </div>
@@ -338,6 +392,45 @@ const EditProfile = ({ onSave, onCancel }) => {
         {/* Sección de Información */}
         <div className="edit-profile-section">
           <label className="edit-profile-section-title">Información Personal</label>
+
+          <div className="form-field">
+            <label htmlFor="edit-profile-email" className="form-label">
+              Correo electrónico *
+            </label>
+            <input
+              type="email"
+              id="edit-profile-email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="form-input"
+              placeholder="tu@correo.com"
+              disabled={saving}
+              aria-label="Correo electrónico"
+            />
+            <p className="form-hint">
+              Puede ser necesario confirmar el nuevo correo si lo cambias
+            </p>
+          </div>
+
+          <div className="form-field">
+            <label htmlFor="edit-profile-display-name" className="form-label">
+              Nombre para mostrar
+            </label>
+            <input
+              type="text"
+              id="edit-profile-display-name"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              className="form-input"
+              placeholder="Tu nombre o apodo"
+              maxLength={50}
+              disabled={saving}
+              aria-label="Nombre para mostrar"
+            />
+            <p className="form-hint">
+              Máximo 50 caracteres
+            </p>
+          </div>
           
           <div className="form-field">
             <label htmlFor="username" className="form-label">
@@ -356,7 +449,7 @@ const EditProfile = ({ onSave, onCancel }) => {
               disabled={saving}
             />
             <p className="form-hint">
-              Mínimo 3 caracteres, máximo 30 caracteres
+              Mínimo 3 caracteres, máximo 30 caracteres. Solo letras, números y guión bajo
             </p>
           </div>
 
@@ -425,7 +518,7 @@ const EditProfile = ({ onSave, onCancel }) => {
                 Guardando...
               </>
             ) : (
-              'GUARDAR CAMBIOS'
+              'Guardar cambios'
             )}
           </button>
         </div>

@@ -53,6 +53,49 @@ export const aniVerseServices = {
     }
   },
 
+  // Obtener posts solo de usuarios que el usuario actual sigue
+  async getPostsFromFollowing(userId) {
+    try {
+      const { data: followData, error: followError } = await supabase
+        .from('user_follows')
+        .select('following_id')
+        .eq('follower_id', userId)
+
+      if (followError) {
+        console.error('Error al obtener seguidos:', followError)
+        throw followError
+      }
+
+      const followingIds = (followData || []).map((f) => f.following_id)
+      if (followingIds.length === 0) {
+        return []
+      }
+
+      const { data, error } = await supabase
+        .from('posts')
+        .select(`
+          *,
+          user:users!posts_user_id_fkey(
+            id,
+            username,
+            avatar_url,
+            display_name
+          )
+        `)
+        .in('user_id', followingIds)
+        .order('created_at', { ascending: false })
+
+      if (error) {
+        console.error('Error al obtener posts de seguidos:', error)
+        throw error
+      }
+      return data || []
+    } catch (error) {
+      console.error('Error en getPostsFromFollowing:', error)
+      throw error
+    }
+  },
+
   // Suscribirse a cambios en tiempo real en las publicaciones
   subscribeToPosts(callback) {
     return supabase

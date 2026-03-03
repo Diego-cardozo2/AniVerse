@@ -295,14 +295,14 @@
 }
 
 .edit-profile-button.cancel {
-  background: #3e63f8;
+  background: transparent;
   color: #F5F5F5;
-  border: 1px solid #3e63f8;
+  border: 1px solid #e53935;
 }
 
 .edit-profile-button.cancel:hover:not(:disabled) {
-  background: #5a7fff;
-  border-color: #5a7fff;
+  background: rgba(229, 57, 53, 0.15);
+  border-color: #ff5252;
   color: #F5F5F5;
 }
 

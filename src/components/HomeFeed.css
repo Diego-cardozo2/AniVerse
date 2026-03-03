@@ -118,6 +118,30 @@
   border-bottom: 1px solid #333;
 }
 
+/* Wrapper sticky de las pestañas Para ti / Siguiendo */
+.feed-tabs-wrapper {
+  position: sticky;
+  top: 0;
+  background: #131313;
+  z-index: 10;
+  border-left: 1px solid #333;
+  border-right: 1px solid #333;
+}
+
+/* Transición suave al cambiar de pestaña */
+.feed-content-transition {
+  animation: feed-fade-in 0.25s ease-out;
+}
+
+@keyframes feed-fade-in {
+  from {
+    opacity: 0.6;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 /* Líneas divisorias entre posts (estilo X/Twitter) */
 .posts-container > * {
   border-bottom: 1px solid #333;

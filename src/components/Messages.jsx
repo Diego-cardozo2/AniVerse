@@ -191,6 +191,7 @@ const Messages = () => {
                 type="text"
                 className="messages-search-input"
                 placeholder="Buscar Mensajes Directos"
+                aria-label="Buscar mensajes directos"
               />
             </div>
           </div>

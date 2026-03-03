@@ -94,7 +94,15 @@ const CommentSection = ({ postId, currentUserId, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    if (!commentContent.trim() || !currentUserId || sending) {
+    const contentTrimmed = commentContent.trim()
+    if (!currentUserId || sending) return
+
+    if (!contentTrimmed) {
+      setError('Escribe un comentario antes de enviar')
+      return
+    }
+    if (commentContent.length > 500) {
+      setError('El comentario no puede superar 500 caracteres')
       return
     }
 
@@ -105,7 +113,7 @@ const CommentSection = ({ postId, currentUserId, onClose }) => {
       const newComment = await aniVerseServices.comments.createComment(
         postId,
         currentUserId,
-        commentContent.trim()
+        contentTrimmed
       )
 
       // Limpiar input
@@ -248,8 +256,12 @@ const CommentSection = ({ postId, currentUserId, onClose }) => {
             </div>
           )}
           <div className="comment-input-wrapper">
+            <label htmlFor="comment-input" className="sr-only">
+              Escribe un comentario
+            </label>
             <textarea
               ref={textareaRef}
+              id="comment-input"
               value={commentContent}
               onChange={(e) => setCommentContent(e.target.value)}
               placeholder="Escribe un comentario..."
@@ -257,6 +269,7 @@ const CommentSection = ({ postId, currentUserId, onClose }) => {
               rows={1}
               disabled={sending}
               maxLength={500}
+              aria-label="Escribe un comentario"
             />
             <button
               type="submit"

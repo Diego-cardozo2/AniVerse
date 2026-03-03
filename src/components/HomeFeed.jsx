@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react'
 import { aniVerseServices } from '../lib/supabaseClient'
 import { supabase } from '../lib/supabaseClient'
-import { useAuth } from '../hooks/useAuth'
 import PostCard from './PostCard'
 import CreatePost from './CreatePost'
 import FeedPostComposer from './FeedPostComposer'
+import FeedTabs, { TAB_PARA_TI, TAB_SIGUIENDO } from './FeedTabs'
 import './HomeFeed.css'
 
 const HomeFeed = () => {
@@ -14,6 +14,8 @@ const HomeFeed = () => {
   const [currentUserId, setCurrentUserId] = useState(null)
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [user, setUser] = useState(null)
+  const [activeTab, setActiveTab] = useState(TAB_PARA_TI)
+  const [followingIds, setFollowingIds] = useState([])
 
   // Obtener usuario actual de forma simple
   useEffect(() => {
@@ -29,31 +31,45 @@ const HomeFeed = () => {
     getCurrentUser()
   }, [])
 
-  // Función para cerrar sesión
-  const signOut = async () => {
-    try {
-      await supabase.auth.signOut()
-      window.location.reload()
-    } catch (error) {
-      console.error('Error al cerrar sesión:', error)
+  // Obtener lista de usuarios que el usuario actual sigue
+  useEffect(() => {
+    if (!currentUserId) {
+      setFollowingIds([])
+      return
     }
-  }
+    const fetchFollowing = async () => {
+      try {
+        const { data, error: followError } = await supabase
+          .from('user_follows')
+          .select('following_id')
+          .eq('follower_id', currentUserId)
+        if (!followError && data) {
+          setFollowingIds(data.map((f) => f.following_id))
+        } else {
+          setFollowingIds([])
+        }
+      } catch (err) {
+        console.error('Error al cargar seguidos:', err)
+        setFollowingIds([])
+      }
+    }
+    fetchFollowing()
+  }, [currentUserId])
 
-  // Cargar posts iniciales
-  const loadPosts = useCallback(async () => {
+  // Cargar posts según la pestaña activa (Para ti = todos, Siguiendo = solo seguidos)
+  const loadPostsForTab = useCallback(async () => {
+    if (!currentUserId) {
+      setLoading(false)
+      return
+    }
     try {
-      console.log('Iniciando carga de posts...')
       setLoading(true)
       setError(null)
-      
-      const postsData = await aniVerseServices.getPosts()
-      console.log('Posts cargados:', postsData?.length || 0, postsData)
-      
+      const postsData =
+        activeTab === TAB_PARA_TI
+          ? await aniVerseServices.getPosts()
+          : await aniVerseServices.getPostsFromFollowing(currentUserId)
       setPosts(postsData || [])
-      
-      if (!postsData || postsData.length === 0) {
-        console.log('No hay posts disponibles')
-      }
     } catch (err) {
       console.error('Error al cargar posts:', err)
       setError(`Error al cargar las publicaciones: ${err.message}`)
@@ -61,76 +77,56 @@ const HomeFeed = () => {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [currentUserId, activeTab])
 
-  // Cargar posts al montar el componente
+  // Al cambiar de pestaña o usuario, recargar posts
   useEffect(() => {
-    // Solo cargar si hay un usuario autenticado
     if (currentUserId) {
-      console.log('Usuario autenticado, cargando posts...')
-      loadPosts()
+      loadPostsForTab()
     } else {
-      // Si no hay usuario, mostrar estado de carga inicial
+      setPosts([])
       setLoading(false)
     }
-  }, [currentUserId, loadPosts])
+  }, [currentUserId, activeTab, loadPostsForTab])
 
-  // Configurar suscripción en tiempo real
+  // Suscripción Realtime: actualizar feed según pestaña activa y lista de seguidos
   useEffect(() => {
     let subscription
+    subscription = aniVerseServices.subscribeToPosts((payload) => {
+      const eventType = payload.eventType ?? (payload.new ? 'INSERT' : payload.old ? 'DELETE' : null)
 
-    const setupRealtimeSubscription = () => {
-      subscription = aniVerseServices.subscribeToPosts((payload) => {
-        console.log('Cambio detectado en tiempo real:', payload)
-
-        switch (payload.eventType) {
-          case 'INSERT':
-            // Nuevo post insertado
-            setPosts(prevPosts => {
-              // Evitar duplicados
-              const exists = prevPosts.some(post => post.id === payload.new.id)
-              if (exists) return prevPosts
-              
-              // Agregar el nuevo post al inicio
-              return [payload.new, ...prevPosts]
-            })
-            break
-
-          case 'UPDATE':
-            // Post actualizado
-            setPosts(prevPosts => 
-              prevPosts.map(post => 
-                post.id === payload.new.id ? { ...post, ...payload.new } : post
-              )
-            )
-            break
-
-          case 'DELETE':
-            // Post eliminado
-            setPosts(prevPosts => 
-              prevPosts.filter(post => post.id !== payload.old.id)
-            )
-            break
-
-          default:
-            break
+      switch (eventType) {
+        case 'INSERT': {
+          const isFromFollowed = followingIds.includes(payload.new?.user_id)
+          const shouldAdd =
+            activeTab === TAB_PARA_TI || (activeTab === TAB_SIGUIENDO && isFromFollowed)
+          if (!shouldAdd) break
+          setPosts((prev) => {
+            const exists = prev.some((p) => p.id === payload.new.id)
+            if (exists) return prev
+            return [payload.new, ...prev]
+          })
+          break
         }
-      })
-    }
-
-    setupRealtimeSubscription()
-
-    // Cleanup al desmontar
-    return () => {
-      if (subscription) {
-        subscription.unsubscribe()
+        case 'UPDATE':
+          setPosts((prev) =>
+            prev.map((p) => (p.id === payload.new?.id ? { ...p, ...payload.new } : p))
+          )
+          break
+        case 'DELETE':
+          setPosts((prev) => prev.filter((p) => p.id !== payload.old?.id))
+          break
+        default:
+          break
       }
+    })
+    return () => {
+      if (subscription) subscription.unsubscribe()
     }
-  }, [])
+  }, [activeTab, followingIds])
 
-  // Función para recargar posts manualmente
   const handleRefresh = () => {
-    loadPosts()
+    loadPostsForTab()
   }
 
   // Función para manejar cuando se crea un nuevo post
@@ -148,13 +144,23 @@ const HomeFeed = () => {
     setIsCreateModalOpen(false)
   }
 
-  // Mostrar estado de carga
+  // Estado de carga inicial
   if (loading && posts.length === 0) {
     return (
       <div className="home-feed">
         <div className="feed-header">
-          <h1 className="feed-title">AniVerse</h1>
           <p className="feed-subtitle">Tu feed de anime y manga</p>
+        </div>
+        {currentUserId && (
+          <div className="feed-composer-wrapper">
+            <FeedPostComposer
+              onPostCreated={handlePostCreated}
+              currentUserId={currentUserId}
+            />
+          </div>
+        )}
+        <div className="feed-tabs-wrapper">
+          <FeedTabs activeTab={activeTab} onTabChange={setActiveTab} />
         </div>
         <div className="loading-container">
           <div className="loading-spinner"></div>
@@ -164,14 +170,17 @@ const HomeFeed = () => {
     )
   }
 
-  // Mostrar error
   if (error) {
     return (
       <div className="home-feed">
         <div className="feed-header">
-          <h1 className="feed-title">AniVerse</h1>
           <p className="feed-subtitle">Tu feed de anime y manga</p>
         </div>
+        {currentUserId && (
+          <div className="feed-tabs-wrapper">
+            <FeedTabs activeTab={activeTab} onTabChange={setActiveTab} />
+          </div>
+        )}
         <div className="error-container">
           <div className="error-icon">⚠️</div>
           <p className="error-text">{error}</p>
@@ -183,50 +192,92 @@ const HomeFeed = () => {
     )
   }
 
-  // Feed vacío
-  if (posts.length === 0) {
+  // Feed vacío: mensaje distinto para "Siguiendo"
+  if (posts.length === 0 && !loading) {
+    const isSiguiendoEmpty = activeTab === TAB_SIGUIENDO
     return (
       <div className="home-feed">
         <div className="feed-header">
-          <h1 className="feed-title">AniVerse</h1>
           <p className="feed-subtitle">Tu feed de anime y manga</p>
         </div>
+        {currentUserId && (
+          <>
+            <div className="feed-composer-wrapper">
+              <FeedPostComposer
+                onPostCreated={handlePostCreated}
+                currentUserId={currentUserId}
+              />
+            </div>
+            <div className="feed-tabs-wrapper">
+              <FeedTabs activeTab={activeTab} onTabChange={setActiveTab} />
+            </div>
+          </>
+        )}
         <div className="empty-container">
-          <div className="empty-icon">🎌</div>
-          <h3 className="empty-title">No hay publicaciones aún</h3>
-          <p className="empty-text">
-            Sé el primero en compartir algo con la comunidad AniVerse
-          </p>
-          <button className="create-post-button" onClick={handleCreatePost}>
-            Crear primera publicación
-          </button>
+          {isSiguiendoEmpty ? (
+            <>
+              <div className="empty-icon">👥</div>
+              <h3 className="empty-title">Aún no sigues a nadie</h3>
+              <p className="empty-text">
+                ¡Explora el AniVerse para encontrar nuevos amigos!
+              </p>
+            </>
+          ) : (
+            <>
+              <div className="empty-icon">🎌</div>
+              <h3 className="empty-title">No hay publicaciones aún</h3>
+              <p className="empty-text">
+                Sé el primero en compartir algo con la comunidad AniVerse
+              </p>
+              <button className="create-post-button" onClick={handleCreatePost}>
+                Crear primera publicación
+              </button>
+            </>
+          )}
         </div>
+        {currentUserId && (
+          <>
+            <button
+              className="floating-create-button"
+              onClick={handleCreatePost}
+              aria-label="Crear nueva publicación"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="#F5F5F5" strokeWidth="2">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+            </button>
+            <CreatePost
+              isOpen={isCreateModalOpen}
+              onClose={handleCloseModal}
+              onPostCreated={handlePostCreated}
+            />
+          </>
+        )}
       </div>
     )
   }
 
   return (
     <div className="home-feed">
-      {/* Header del Feed */}
       <div className="feed-header">
         <p className="feed-subtitle">Tu feed de anime y manga</p>
-        <div className="header-actions">
-
-        </div>
       </div>
 
-      {/* Compositor de Posts Inline */}
       {currentUserId && (
         <div className="feed-composer-wrapper">
-          <FeedPostComposer 
+          <FeedPostComposer
             onPostCreated={handlePostCreated}
             currentUserId={currentUserId}
           />
         </div>
       )}
 
-      {/* Lista de Posts */}
-      <div className="posts-container">
+      <div className="feed-tabs-wrapper">
+        <FeedTabs activeTab={activeTab} onTabChange={setActiveTab} />
+      </div>
+
+      <div className="posts-container feed-content-transition">
         {posts.map((post) => (
           <PostCard 
             key={post.id} 

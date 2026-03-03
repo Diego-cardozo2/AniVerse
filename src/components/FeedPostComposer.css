@@ -61,10 +61,18 @@
   resize: none;
   min-height: 44px;
   max-height: 300px;
-  padding: 0;
+  padding: 12px;
   margin-bottom: 12px;
   outline: none;
   line-height: 24px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.composer-textarea::-webkit-scrollbar {
+  display: none;
 }
 
 .composer-textarea::placeholder {

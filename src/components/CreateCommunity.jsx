@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase, aniVerseServices } from '../lib/supabaseClient'
 import { router } from '../lib/router'
+import Toast from './Toast/Toast'
 import './CreateCommunity.css'
 
 const CreateCommunity = () => {
@@ -13,6 +14,7 @@ const CreateCommunity = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [currentUserId, setCurrentUserId] = useState(null)
+  const [showToast, setShowToast] = useState(false)
 
   // Obtener usuario actual
   useEffect(() => {
@@ -43,8 +45,21 @@ const CreateCommunity = () => {
       return
     }
 
-    if (!formData.name.trim()) {
+    const nameTrimmed = formData.name.trim()
+    if (!nameTrimmed) {
       setError('El nombre de la comunidad es requerido')
+      return
+    }
+    if (nameTrimmed.length < 3) {
+      setError('El nombre de la comunidad debe tener al menos 3 caracteres')
+      return
+    }
+    if (nameTrimmed.length > 50) {
+      setError('El nombre de la comunidad no puede superar 50 caracteres')
+      return
+    }
+    if (formData.description.length > 500) {
+      setError('La descripción no puede superar 500 caracteres')
       return
     }
 
@@ -53,7 +68,7 @@ const CreateCommunity = () => {
       setError(null)
 
       const newCommunity = await aniVerseServices.communities.create({
-        name: formData.name.trim(),
+        name: nameTrimmed,
         description: formData.description.trim() || null,
         category: formData.category,
         is_private: formData.is_private,
@@ -63,8 +78,13 @@ const CreateCommunity = () => {
       // Unirse automáticamente a la comunidad creada
       await aniVerseServices.communities.join(newCommunity.id, currentUserId)
 
-      // Redirigir a la página de la comunidad (usar el formato correcto: comunidades/:id)
-      router.navigate(`comunidades/${newCommunity.id}`)
+      if (newCommunity) {
+        setShowToast(true)
+        // Retrasar la redirección para que el usuario vea el Toast
+        setTimeout(() => {
+          router.navigate(`comunidades/${newCommunity.id}`)
+        }, 2000)
+      }
     } catch (err) {
       console.error('Error al crear comunidad:', err)
       
@@ -193,6 +213,13 @@ const CreateCommunity = () => {
           </button>
         </div>
       </form>
+
+      <Toast
+        show={showToast}
+        message="Comunidad creada correctamente"
+        duration={7000}
+        onClose={() => setShowToast(false)}
+      />
     </div>
   )
 }

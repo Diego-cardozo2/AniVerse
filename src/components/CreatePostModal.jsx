@@ -21,19 +21,31 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
     getCurrentUser()
   }, [])
 
+  const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+  const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5MB
+
   // Manejar selección de imagen
   const handleImageSelect = (e) => {
     const file = e.target.files[0]
-    if (file) {
-      setImageFile(file)
-      
-      // Crear preview de la imagen
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        setImagePreview(e.target.result)
-      }
-      reader.readAsDataURL(file)
+    if (!file) return
+
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      setError('Solo se permiten imágenes (JPEG, PNG, WebP, GIF)')
+      return
     }
+    if (file.size > MAX_IMAGE_SIZE) {
+      setError('La imagen debe ser menor a 5MB')
+      return
+    }
+
+    setError(null)
+    setImageFile(file)
+
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      setImagePreview(e.target.result)
+    }
+    reader.readAsDataURL(file)
   }
 
   // Subir imagen a Supabase Storage
@@ -65,9 +77,18 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
   // Manejar envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
-    if (!content.trim()) {
+
+    const contentTrimmed = content.trim()
+    if (!contentTrimmed) {
       setError('Por favor escribe algo en tu publicación')
+      return
+    }
+    if (contentTrimmed.length < 3) {
+      setError('La publicación debe tener al menos 3 caracteres')
+      return
+    }
+    if (content.length > 500) {
+      setError('La publicación no puede superar 500 caracteres')
       return
     }
 
@@ -93,7 +114,7 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
         .insert([
           {
             user_id: currentUser.id,
-            content: content.trim(),
+            content: contentTrimmed,
             image_url: imageUrl,
             likes_count: 0,
             comments_count: 0
@@ -176,7 +197,11 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
         <form onSubmit={handleSubmit} className="post-form">
           {/* Área de texto */}
           <div className="form-group">
+            <label htmlFor="post-content-modal" className="sr-only">
+              Contenido de la publicación
+            </label>
             <textarea
+              id="post-content-modal"
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="¿Qué quieres compartir con la comunidad AniVerse? 🎌"
@@ -185,6 +210,7 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
               maxLength={500}
               disabled={loading}
               onKeyDown={handleKeyDown}
+              aria-label="Contenido de la publicación"
             />
             <div className="character-count">
               {content.length}/500

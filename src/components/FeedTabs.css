@@ -1,0 +1,59 @@
+/* FeedTabs - Pestañas del Feed (estilo AniVerse, sticky) */
+
+.feed-tabs {
+  display: flex;
+  position: relative;
+  width: 100%;
+  background: rgba(19, 19, 19, 0.98);
+  border-bottom: 1px solid #333;
+  z-index: 9;
+  flex-shrink: 0;
+}
+
+.feed-tab {
+  flex: 1;
+  padding: 14px 16px;
+  background: none;
+  border: none;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  position: relative;
+  z-index: 1;
+  outline: none;
+}
+
+.feed-tab:focus,
+.feed-tab:focus-visible {
+  outline: none;
+}
+
+.feed-tab:hover {
+  color: #c0c0c0;
+}
+
+.feed-tab-active {
+  color: #F5F5F5;
+}
+
+.feed-tab-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50%;
+  height: 3px;
+  background: #D01C1C;
+  border-radius: 3px 3px 0 0;
+  transition: transform 0.25s ease;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .feed-tab-indicator {
+    background: #3e63f8;
+  }
+}
+

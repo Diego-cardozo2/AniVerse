@@ -10,6 +10,13 @@ const Settings = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [currentUser, setCurrentUser] = useState(null)
   const [loadingPlans, setLoadingPlans] = useState(false)
+  // Formulario cambiar contraseña (sección Tu cuenta)
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmNewPassword, setConfirmNewPassword] = useState('')
+  const [passwordError, setPasswordError] = useState(null)
+  const [passwordSuccess, setPasswordSuccess] = useState(false)
+  const [passwordSaving, setPasswordSaving] = useState(false)
 
   const settingsSections = [
     {
@@ -94,6 +101,59 @@ const Settings = () => {
 
   const handleBackToSection = () => {
     setSelectedSubSection(null)
+    setPasswordError(null)
+    setPasswordSuccess(false)
+    setCurrentPassword('')
+    setNewPassword('')
+    setConfirmNewPassword('')
+  }
+
+  const handleChangePasswordSubmit = async (e) => {
+    e.preventDefault()
+    setPasswordError(null)
+    setPasswordSuccess(false)
+
+    if (!currentPassword.trim()) {
+      setPasswordError('Ingresa tu contraseña actual')
+      return
+    }
+    if (newPassword.length < 6) {
+      setPasswordError('La nueva contraseña debe tener al menos 6 caracteres')
+      return
+    }
+    if (newPassword !== confirmNewPassword) {
+      setPasswordError('Las contraseñas nuevas no coinciden')
+      return
+    }
+
+    setPasswordSaving(true)
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user?.email) {
+        setPasswordError('No se pudo obtener tu correo. Cierra sesión e inicia de nuevo.')
+        return
+      }
+      // Verificar contraseña actual re-autenticando
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: currentPassword
+      })
+      if (signInError) {
+        setPasswordError('La contraseña actual no es correcta')
+        return
+      }
+      // Actualizar a la nueva contraseña
+      const { error: updateError } = await supabase.auth.updateUser({ password: newPassword })
+      if (updateError) throw updateError
+      setPasswordSuccess(true)
+      setCurrentPassword('')
+      setNewPassword('')
+      setConfirmNewPassword('')
+    } catch (err) {
+      setPasswordError(err.message || 'Error al cambiar la contraseña')
+    } finally {
+      setPasswordSaving(false)
+    }
   }
 
   const loadUserData = async () => {
@@ -415,6 +475,7 @@ const Settings = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="settings-search-input"
+            aria-label="Buscar en configuración"
           />
         </div>
 
@@ -590,6 +651,8 @@ const Settings = () => {
                       handleSubSectionClick('preferences')
                     } else if (selectedSection === 'account' && option.title === 'Información de la cuenta') {
                       handleSubSectionClick('account-info')
+                    } else if (selectedSection === 'account' && option.title === 'Cambia tu contraseña') {
+                      handleSubSectionClick('change-password')
                     }
                   }}
                 >
@@ -625,7 +688,7 @@ const Settings = () => {
                 <div className="settings-filter-header">
                   <h3 className="settings-filter-title">Filtro de calidad</h3>
                   <label className="settings-checkbox">
-                    <input type="checkbox" />
+                    <input type="checkbox" aria-label="Activar filtro de calidad" />
                     <span className="settings-checkbox-mark"></span>
                   </label>
                 </div>
@@ -664,32 +727,32 @@ const Settings = () => {
               
               <div className="settings-muted-options">
                 <label className="settings-muted-option">
-                  <input type="checkbox" />
+                  <input type="checkbox" aria-label="Silenciar notificaciones de personas que no sigues" />
                   <span className="settings-checkbox-square"></span>
                   <span className="settings-muted-option-text">Que no sigues</span>
                 </label>
                 <label className="settings-muted-option">
-                  <input type="checkbox" />
+                  <input type="checkbox" aria-label="Silenciar notificaciones de personas que no te siguen" />
                   <span className="settings-checkbox-square"></span>
                   <span className="settings-muted-option-text">Que no te siguen</span>
                 </label>
                 <label className="settings-muted-option">
-                  <input type="checkbox" />
+                  <input type="checkbox" aria-label="Silenciar notificaciones de cuentas nuevas" />
                   <span className="settings-checkbox-square"></span>
                   <span className="settings-muted-option-text">Cuya cuenta es nueva</span>
                 </label>
                 <label className="settings-muted-option">
-                  <input type="checkbox" />
+                  <input type="checkbox" aria-label="Silenciar notificaciones de quienes usan foto de perfil predeterminada" />
                   <span className="settings-checkbox-square"></span>
                   <span className="settings-muted-option-text">Que aún usan la foto de perfil predeterminada</span>
                 </label>
                 <label className="settings-muted-option">
-                  <input type="checkbox" />
+                  <input type="checkbox" aria-label="Silenciar notificaciones de quienes no confirmaron correo" />
                   <span className="settings-checkbox-square"></span>
                   <span className="settings-muted-option-text">Que no confirmaron su correo electrónico</span>
                 </label>
                 <label className="settings-muted-option">
-                  <input type="checkbox" />
+                  <input type="checkbox" aria-label="Silenciar notificaciones de quienes no confirmaron teléfono" />
                   <span className="settings-checkbox-square"></span>
                   <span className="settings-muted-option-text">Que no confirmaron su número de teléfono</span>
                 </label>
@@ -751,13 +814,13 @@ const Settings = () => {
                   </p>
                 </div>
                 <label className="settings-checkbox">
-                  <input type="checkbox" defaultChecked />
+                  <input type="checkbox" defaultChecked aria-label="Activar notificaciones push" />
                   <span className="settings-checkbox-mark"></span>
                 </label>
               </div>
             </div>
           )}
-          
+
           {selectedSubSection === 'account-info' && (
             <div className="settings-subsection">
               <div className="settings-subsection-header">
@@ -778,6 +841,103 @@ const Settings = () => {
                   Esta sección estará disponible próximamente.
                 </p>
               </div>
+            </div>
+          )}
+
+          {selectedSubSection === 'change-password' && (
+            <div className="settings-subsection">
+              <div className="settings-subsection-header">
+                <button className="settings-back-arrow" onClick={handleBackToSection}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="15 18 9 12 15 6"/>
+                  </svg>
+                </button>
+                <h1 className="settings-subsection-title">Cambia tu contraseña</h1>
+              </div>
+              
+              <p className="settings-subsection-intro">
+                Para mayor seguridad, ingresa tu contraseña actual y luego la nueva contraseña dos veces.
+              </p>
+              
+              <form className="settings-change-password-form" onSubmit={handleChangePasswordSubmit}>
+                {passwordError && (
+                  <div className="settings-password-message error">
+                    {passwordError}
+                  </div>
+                )}
+                {passwordSuccess && (
+                  <div className="settings-password-message success">
+                    Contraseña actualizada correctamente.
+                  </div>
+                )}
+                <div className="settings-form-field">
+                  <label htmlFor="settings-current-password" className="settings-form-label">
+                    Contraseña actual *
+                  </label>
+                  <input
+                    type="password"
+                    id="settings-current-password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    className="settings-form-input"
+                    placeholder="Tu contraseña actual"
+                    disabled={passwordSaving}
+                    autoComplete="current-password"
+                    aria-label="Contraseña actual"
+                  />
+                </div>
+                <div className="settings-form-field">
+                  <label htmlFor="settings-new-password" className="settings-form-label">
+                    Nueva contraseña *
+                  </label>
+                  <input
+                    type="password"
+                    id="settings-new-password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className="settings-form-input"
+                    placeholder="Mínimo 6 caracteres"
+                    minLength={6}
+                    disabled={passwordSaving}
+                    autoComplete="new-password"
+                    aria-label="Nueva contraseña"
+                  />
+                </div>
+                <div className="settings-form-field">
+                  <label htmlFor="settings-confirm-password" className="settings-form-label">
+                    Confirmar nueva contraseña *
+                  </label>
+                  <input
+                    type="password"
+                    id="settings-confirm-password"
+                    value={confirmNewPassword}
+                    onChange={(e) => setConfirmNewPassword(e.target.value)}
+                    className="settings-form-input"
+                    placeholder="Repite la nueva contraseña"
+                    minLength={6}
+                    disabled={passwordSaving}
+                    autoComplete="new-password"
+                    aria-label="Confirmar nueva contraseña"
+                  />
+                </div>
+                <div className="settings-change-password-actions">
+                  <button
+                    type="button"
+                    className="settings-button secondary"
+                    onClick={handleBackToSection}
+                    disabled={passwordSaving}
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    className="settings-button primary"
+                    disabled={passwordSaving}
+                  >
+                    {passwordSaving ? 'Guardando...' : 'Guardar nueva contraseña'}
+                  </button>
+                </div>
+              </form>
             </div>
           )}
         </div>

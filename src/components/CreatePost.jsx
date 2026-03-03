@@ -238,6 +238,10 @@ const CreatePost = ({ isOpen, onClose, onPostCreated, onSuccess, communityId }) 
       setError('La publicación debe tener al menos 3 caracteres')
       return
     }
+    if (content.length > 500) {
+      setError('La publicación no puede superar 500 caracteres')
+      return
+    }
 
     setLoading(true)
     setError(null)
@@ -432,6 +436,7 @@ const CreatePost = ({ isOpen, onClose, onPostCreated, onSuccess, communityId }) 
               onChange={handleImageSelect}
               className="hidden-file-input"
               disabled={loading}
+              aria-label="Seleccionar imagen para la publicación"
             />
           </div>
 

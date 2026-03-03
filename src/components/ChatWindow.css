@@ -357,6 +357,15 @@
   color: #888;
 }
 
+/* Error de validación del mensaje */
+.chat-message-error {
+  padding: 8px 24px;
+  background: rgba(229, 57, 53, 0.15);
+  color: #ff5252;
+  font-size: 0.875rem;
+  border-top: 1px solid rgba(229, 57, 53, 0.3);
+}
+
 /* Formulario de envío */
 .chat-input-form {
   display: flex;
